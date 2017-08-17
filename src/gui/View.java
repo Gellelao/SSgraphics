@@ -1,8 +1,8 @@
-package gui;
+package src.gui;
 import java.awt.*; import java.util.*; import javax.swing.*;
 
-import model.Board;
-import model.Token;
+import src.model.Board;
+import src.model.Token;
 
 public class View extends JComponent implements Observer {
   private static final long serialVersionUID = 1L;

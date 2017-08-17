@@ -1,8 +1,8 @@
-package gui;
+package src.gui;
 
 import javax.swing.SwingUtilities;
 
-import model.Board;
+import src.model.Board;
 
 public class Main {
   public static void main(String[] s) {

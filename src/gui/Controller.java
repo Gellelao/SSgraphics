@@ -1,11 +1,11 @@
-package gui;
+package src.gui;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Stack;
 
-import model.Board;
+import src.model.Board;
 
 public class Controller implements KeyListener, MouseListener {
 	static Board myModel;

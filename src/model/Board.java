@@ -1,10 +1,10 @@
-package model;
+package src.model;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Stack;
 
-import model.PlayerToken;
+import src.model.PlayerToken;
 
 /**
  * Class that takes care of the 2d array of tokens called the board
