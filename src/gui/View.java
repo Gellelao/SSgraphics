@@ -1,30 +1,79 @@
 package src.gui;
-import java.awt.*; import java.util.*; import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.*; import javax.swing.*;
 
 import src.model.Board;
 import src.model.Token;
 
 public class View extends JComponent implements Observer {
 	private static final long serialVersionUID = 1L;
-	Board myModel;
-	
+	private Board myModel;
+	private JFrame current;
+	private JPanel cards;
+	final static String MENUPANEL = "Card with menu buttons";
+	final static String GAMEPANEL = "Card with the game contents";
+
 	public View(Board board) {
+
+		
 		myModel = board;
 		myModel.addObserver(this);
 		this.addKeyListener(new Controller(board));
 		this.setFocusable(true);
+
+		// "current" is the single JFrame that this program uses
+		current = new JFrame("Sword and Shield Game");
+		current.setBounds(700, 200, 500, 500);	
 		
-		JFrame menu = new JFrame("Sword and Shield Game");
-		menu.setLayout(new BorderLayout());
-		menu.setBounds(700, 200, 500, 500);
+		cards = new JPanel(new CardLayout());
+		
+		// Make the menu panel
 		JPanel menuButtons = new JPanel();
-			menuButtons.add(new JButton("Play"));
-			menuButtons.add(new JButton("Info"));
-			menuButtons.add(new JButton("Quit"));
-		menu.add(menuButtons, BorderLayout.CENTER);
-		menu.setVisible(true);
-		
-/*		JFrame f = new JFrame("Sword and Shield Game");
+		JButton play = new JButton("Begin New Game");
+			play.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					CardLayout layout = (CardLayout) cards.getLayout();
+					layout.show(cards, GAMEPANEL);
+				}});
+		JButton info = new JButton("Info");
+			info.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					current.add(new JLabel("Made by Deacon, 2017"));
+				}});
+		JButton quit = new JButton("Quit");
+			quit.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					System.exit(1);
+				}});
+		menuButtons.add(play);
+		menuButtons.add(info);
+		menuButtons.add(quit);
+
+		// Make the game panel
+		JPanel game = new JPanel(new BorderLayout());
+		game.add(this, BorderLayout.CENTER);
+		JPanel s = new JPanel();
+			s.add(new JButton("Undo"));
+			s.add(new JButton("Pass"));
+			s.add(new JButton("Surrender"));
+		game.add(new JPanel(), BorderLayout.NORTH);
+		game.add(s, BorderLayout.SOUTH);
+		game.add(new JPanel(), BorderLayout.EAST);
+		game.add(new JPanel(), BorderLayout.WEST);
+
+		// Add the two panels to the cards panel
+		cards.add(menuButtons, MENUPANEL);
+		cards.add(game, GAMEPANEL);
+
+		current.add(cards);		
+		//current.pack();
+		current.setVisible(true);
+	}
+
+/*	public void play() {
+		JFrame f = new JFrame("Sword and Shield Game");
 		f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		f.setLayout(new BorderLayout());
 		f.add(this, BorderLayout.CENTER);
@@ -37,7 +86,15 @@ public class View extends JComponent implements Observer {
 		f.add(new JPanel(), BorderLayout.EAST);
 		f.add(new JPanel(), BorderLayout.WEST);
 		f.pack();
-		f.setVisible(true);*/
+		f.setVisible(true);
+
+		current = f;
+		current.pack();
+		current.setVisible(true);
+	}*/
+
+	public void printInfo() {
+		
 	}
 
 	public void paintComponent(Graphics _g) {
