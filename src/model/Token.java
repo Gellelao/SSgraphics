@@ -1,4 +1,4 @@
-package model;
+package src.model;
 
 public interface Token{
 	public String[] getImage();

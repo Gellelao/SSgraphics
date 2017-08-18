@@ -1,4 +1,4 @@
-package model;
+package src.model;
 import java.util.ArrayList;
 
 /**
@@ -83,7 +83,7 @@ public class PieceToken implements Token{
 		}
 		layout = temp;
 	}
-	
+
 	/**
 	 * Sets this piece to its original orientation
 	 */

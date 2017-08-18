@@ -5,41 +5,61 @@ import src.model.Board;
 import src.model.Token;
 
 public class View extends JComponent implements Observer {
-  private static final long serialVersionUID = 1L;
-  Board myModel;
-  public View(Board board) {
-    myModel = board;
-    myModel.addObserver(this);
-    this.addKeyListener(new Controller(board));
-    this.setFocusable(true);
-    JFrame f = new JFrame("Wheat run, use (w,a,s,d) to play");
-    f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    f.add(this);
-    f.pack();
-    f.setVisible(true);
-  }
+	private static final long serialVersionUID = 1L;
+	Board myModel;
+	
+	public View(Board board) {
+		myModel = board;
+		myModel.addObserver(this);
+		this.addKeyListener(new Controller(board));
+		this.setFocusable(true);
+		
+		JFrame menu = new JFrame("Sword and Shield Game");
+		menu.setLayout(new BorderLayout());
+		menu.setBounds(700, 200, 500, 500);
+		JPanel menuButtons = new JPanel();
+			menuButtons.add(new JButton("Play"));
+			menuButtons.add(new JButton("Info"));
+			menuButtons.add(new JButton("Quit"));
+		menu.add(menuButtons, BorderLayout.CENTER);
+		menu.setVisible(true);
+		
+/*		JFrame f = new JFrame("Sword and Shield Game");
+		f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		f.setLayout(new BorderLayout());
+		f.add(this, BorderLayout.CENTER);
+		JPanel s = new JPanel();
+			s.add(new JButton("Undo"));
+			s.add(new JButton("Pass"));
+			s.add(new JButton("Surrender"));
+		f.add(new JPanel(), BorderLayout.NORTH);
+		f.add(s, BorderLayout.SOUTH);
+		f.add(new JPanel(), BorderLayout.EAST);
+		f.add(new JPanel(), BorderLayout.WEST);
+		f.pack();
+		f.setVisible(true);*/
+	}
 
-  public void paintComponent(Graphics _g) {
-	    super.paintComponent(_g);
-	    Graphics2D g = (Graphics2D) _g;
-	    int minD = Math.min(getHeight(), getWidth());
-	    g.setColor(Color.GREEN.darker());
-	    g.fillRect(0, 0, minD, minD);
-	    drawBoard(g);
-  }
+	public void paintComponent(Graphics _g) {
+		super.paintComponent(_g);
+		Graphics2D g = (Graphics2D) _g;
+		g.setColor(Color.GREEN.darker());
+		g.fillRect(0, 0, getWidth(), getHeight());
+		drawBoard(g);
+	}
 
 	/**
 	 * Draws the board field of this Board object
 	 */
 	public void drawBoard(Graphics2D g) {
 		Token[][] board = myModel.getBoard();
-	    g.setColor(Color.BLUE);
+		g.setColor(Color.BLUE);
 		for(int i = 0; i < board.length; i++) {
 			for(int j = 0; j < board[0].length; j++) {
-			    g.fillRect(100+i*10, 100+j*10, 8, 8);
+				g.fillRect(100+i*10, 100+j*10, 8, 8);
 			}
 		}
-/*		System.out.println(".............................................................");
+		/*		System.out.println(".............................................................");
 		for(int i = 0; i < board.length; i++) {
 			for(int j = 0; j < 3; j++) {
 				for(int k = 0; k < board[0].length; k++) {
@@ -144,6 +164,6 @@ public class View extends JComponent implements Observer {
 	  }*/
 
 
-  public Dimension getPreferredSize() {return new Dimension(600, 600);}
+  public Dimension getPreferredSize() {return new Dimension(1200, 800);}
   public void update(Observable arg0, Object arg1) {repaint();}
 }
