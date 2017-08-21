@@ -17,7 +17,7 @@ public class View extends JComponent implements Observer {
 
 	public View(Board board) {
 
-		
+
 		myModel = board;
 		myModel.addObserver(this);
 		this.addKeyListener(new Controller(board));
@@ -25,10 +25,10 @@ public class View extends JComponent implements Observer {
 
 		// "current" is the single JFrame that this program uses
 		current = new JFrame("Sword and Shield Game");
-		current.setBounds(700, 200, 500, 500);	
-		
+		current.setBounds(700, 200, 500, 500);
+
 		cards = new JPanel(new CardLayout());
-		
+
 		// Make the menu panel
 		JPanel menuButtons = new JPanel();
 		JButton play = new JButton("Begin New Game");
@@ -54,12 +54,30 @@ public class View extends JComponent implements Observer {
 		// Make the game panel
 		JPanel game = new JPanel(new BorderLayout());
 		game.add(this, BorderLayout.CENTER);
-		JPanel s = new JPanel();
-			s.add(new JButton("Undo"));
-			s.add(new JButton("Pass"));
-			s.add(new JButton("Surrender"));
+		JPanel bottomRow = new JPanel();
+		JButton undo = new JButton("Undo");
+			undo.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+				// undo method
+			}});
+		JButton pass = new JButton("Pass");
+			pass.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+				// pass method
+			}});
+		JButton surrender = new JButton("Surrender");
+			surrender.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					CardLayout layout = (CardLayout) cards.getLayout();
+					layout.show(cards, MENUPANEL);
+			}});
+
+		bottomRow.add(undo);
+		bottomRow.add(pass);
+		bottomRow.add(surrender);
+
 		game.add(new JPanel(), BorderLayout.NORTH);
-		game.add(s, BorderLayout.SOUTH);
+		game.add(bottomRow, BorderLayout.SOUTH);
 		game.add(new JPanel(), BorderLayout.EAST);
 		game.add(new JPanel(), BorderLayout.WEST);
 
@@ -67,7 +85,7 @@ public class View extends JComponent implements Observer {
 		cards.add(menuButtons, MENUPANEL);
 		cards.add(game, GAMEPANEL);
 
-		current.add(cards);		
+		current.add(cards);
 		//current.pack();
 		current.setVisible(true);
 	}
@@ -94,7 +112,7 @@ public class View extends JComponent implements Observer {
 	}*/
 
 	public void printInfo() {
-		
+
 	}
 
 	public void paintComponent(Graphics _g) {
@@ -102,35 +120,36 @@ public class View extends JComponent implements Observer {
 		Graphics2D g = (Graphics2D) _g;
 		g.setColor(Color.GREEN.darker());
 		g.fillRect(0, 0, getWidth(), getHeight());
-		drawBoard(g);
+		drawBoard(g, myModel.getBoard());
 	}
 
 	/**
 	 * Draws the board field of this Board object
 	 */
-	public void drawBoard(Graphics2D g) {
-		Token[][] board = myModel.getBoard();
-		g.setColor(Color.BLUE);
-		for(int i = 0; i < board.length; i++) {
-			for(int j = 0; j < board[0].length; j++) {
-				g.fillRect(100+i*10, 100+j*10, 8, 8);
+	public void drawBoard(Graphics2D g, Token[][] grid) {
+		int borderGap = 50;
+		int borderWeight = 5;
+		int tokenSize = 32;
+
+		// Draw the board grid background
+		g.setColor(Color.BLACK);
+		g.fillRect(borderGap, borderGap,
+				(tokenSize+borderWeight)*grid.length+borderWeight,
+				(tokenSize+borderWeight)*grid[0].length+borderWeight);
+		g.setColor(Color.GRAY);
+		for(int i = 0; i < grid.length; i++) {
+			for(int j = 0; j < grid[0].length; j++) {
+				g.fillRect(borderGap+borderWeight+(i*(tokenSize+borderWeight)),
+						   borderGap+borderWeight+(j*(tokenSize+borderWeight)),
+						   tokenSize, tokenSize);
 			}
 		}
-		/*		System.out.println(".............................................................");
-		for(int i = 0; i < board.length; i++) {
-			for(int j = 0; j < 3; j++) {
-				for(int k = 0; k < board[0].length; k++) {
-					System.out.print(":");
-					if(board[i][k] == null)System.out.print("     ");
-					else {
-						String[] image = board[i][k].getImage();
-						System.out.print(image[j]);
-					}
-				}
-				System.out.print(":\n");
-			}
-			System.out.println(".............................................................");
-		}*/
+	}
+
+	private void drawToken(int x, int y, Token p){
+		if(p instanceof src.model.PlayerToken) {
+
+		}
 	}
 
 	/**
