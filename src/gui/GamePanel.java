@@ -15,19 +15,14 @@ public class GamePanel extends JPanel{
 	private Board myModel;
 	private Color bgColour;
 	
-	public GamePanel() {  //Board model, Color color
-		//myModel = model;
-		
-	}
-	@Override
-	public Dimension getPreferredSize() {
-		// TODO Auto-generated method stub
-		return new Dimension(500, 500);
+	public GamePanel(Board model, Color colour) {
+		myModel = model;
+		bgColour = colour;
 	}
 	
-	public void drawBoard(Graphics2D g, Token[][] grid, int tSize) {
-		int borderWeight = 4;
-		int tokenSize = tSize;
+	public void drawBoard(Graphics2D g, Token[][] grid) {
+		int borderWeight = Math.min(getWidth(), getHeight())/100;
+		int tokenSize = Math.min(getWidth(), getHeight())/10 - 20;
 		
 		int boardWidth = (tokenSize+borderWeight)*grid.length+borderWeight;
 		int boardHeight = (tokenSize+borderWeight)*grid[0].length+borderWeight;
@@ -54,7 +49,7 @@ public class GamePanel extends JPanel{
 					g.fillRect(x, y, tokenSize, tokenSize);
 				}
 				if(grid[i][j] != null) {
-					drawToken(g, x, y, 32, grid[i][j]);
+					drawToken(g, x, y, tokenSize, grid[i][j]);
 				}
 			}
 		}
@@ -81,11 +76,11 @@ public class GamePanel extends JPanel{
 		
 	}
 	
-/*	public void paintComponent(Graphics _g) {
+	public void paintComponent(Graphics _g) {
 		super.paintComponent(_g);
 		Graphics2D g = (Graphics2D) _g;
-		g.setColor(Color.GREEN.darker());
+		g.setColor(bgColour);
 		g.fillRect(0, 0, getWidth(), getHeight());
 		drawBoard(g, myModel.getBoard());
-	}*/
+	}
 }
