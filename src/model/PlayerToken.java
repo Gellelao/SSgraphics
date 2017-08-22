@@ -115,7 +115,8 @@ public class PlayerToken implements Token{
 
 	@Override
 	public String[] getImage() {
-		String[] image = {"/   \\", "  " + name + "  ", "\\   /"};
+		String[] image = new String[1];
+		image[0] = name;
 		return image;
 	}
 

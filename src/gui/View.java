@@ -127,29 +127,59 @@ public class View extends JComponent implements Observer {
 	 * Draws the board field of this Board object
 	 */
 	public void drawBoard(Graphics2D g, Token[][] grid) {
-		int borderGap = 50;
-		int borderWeight = 5;
+		int borderWeight = 4;
 		int tokenSize = 32;
+
+		int boardWidth = (tokenSize+borderWeight)*grid.length+borderWeight;
+		int boardHeight = (tokenSize+borderWeight)*grid[0].length+borderWeight;
+		// These "real" coords are based on the current size of the JPanel
+		int realX = getWidth()/2-boardWidth/2;
+		int realY = getHeight()/2-boardHeight/2;
 
 		// Draw the board grid background
 		g.setColor(Color.BLACK);
-		g.fillRect(borderGap, borderGap,
-				(tokenSize+borderWeight)*grid.length+borderWeight,
-				(tokenSize+borderWeight)*grid[0].length+borderWeight);
-		g.setColor(Color.GRAY);
+		g.fillRect(realX, realY, boardWidth, boardHeight);
+		// Draw each tile's background
 		for(int i = 0; i < grid.length; i++) {
 			for(int j = 0; j < grid[0].length; j++) {
-				g.fillRect(borderGap+borderWeight+(i*(tokenSize+borderWeight)),
-						   borderGap+borderWeight+(j*(tokenSize+borderWeight)),
-						   tokenSize, tokenSize);
+				int x = realX+borderWeight+(i*(tokenSize+borderWeight));
+				int y = realY+borderWeight+(j*(tokenSize+borderWeight));
+				g.setColor(Color.GRAY);
+				g.fillRect(x, y, tokenSize, tokenSize);
+				if(i == 2 && j == 2 && grid[i][j] == null) {
+					g.setColor(Color.YELLOW.darker());
+					g.fillRect(x, y, tokenSize, tokenSize);
+				}
+				if(i == 7 && j == 7 && grid[i][j] == null) {
+					g.setColor(Color.GREEN.darker());
+					g.fillRect(x, y, tokenSize, tokenSize);
+				}
+				if(grid[i][j] != null) {
+					drawToken(g, x, y, tokenSize, grid[i][j]);
+				}
 			}
 		}
 	}
 
-	private void drawToken(int x, int y, Token p){
-		if(p instanceof src.model.PlayerToken) {
-
+	private void drawToken(Graphics2D g, int x, int y, int size, Token p){
+		String[] tokenInfo = p.getImage();
+		if(tokenInfo[0].equals("1")) {
+			g.setColor(Color.YELLOW.brighter());
+			g.fillRect(x, y, size, size);
+			return;
 		}
+		else if(tokenInfo[0].equals("2")) {
+			g.setColor(Color.GREEN.brighter());
+			g.fillRect(x, y, size, size);
+			return;
+		}
+		else if(tokenInfo[0].toUpperCase().equals(tokenInfo[0])) {
+			g.setColor(Color.GREEN);
+		}
+		else g.setColor(Color.YELLOW);
+		g.fillOval(x, y, size, size);
+		// Draw the red swords and shields
+
 	}
 
 	/**
