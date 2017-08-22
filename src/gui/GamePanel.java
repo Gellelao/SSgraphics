@@ -1,19 +1,33 @@
 package src.gui;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
 
+import src.model.Board;
 import src.model.Token;
 
-public abstract class AbstractGamePanel extends JPanel{
+public class GamePanel extends JPanel{
 	private static final long serialVersionUID = 1L;
+	private Board myModel;
+	private Color bgColour;
 	
-	public void drawBoard(Graphics2D g, Token[][] grid) {
+	public GamePanel() {  //Board model, Color color
+		//myModel = model;
+		
+	}
+	@Override
+	public Dimension getPreferredSize() {
+		// TODO Auto-generated method stub
+		return new Dimension(500, 500);
+	}
+	
+	public void drawBoard(Graphics2D g, Token[][] grid, int tSize) {
 		int borderWeight = 4;
-		int tokenSize = 32;
+		int tokenSize = tSize;
 		
 		int boardWidth = (tokenSize+borderWeight)*grid.length+borderWeight;
 		int boardHeight = (tokenSize+borderWeight)*grid[0].length+borderWeight;
@@ -66,6 +80,7 @@ public abstract class AbstractGamePanel extends JPanel{
 		// Draw the red swords and shields
 		
 	}
+	
 /*	public void paintComponent(Graphics _g) {
 		super.paintComponent(_g);
 		Graphics2D g = (Graphics2D) _g;

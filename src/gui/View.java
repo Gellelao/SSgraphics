@@ -53,8 +53,7 @@ public class View extends JComponent implements Observer {
 
 		// Make the game panel
 		JPanel game = new JPanel(new BorderLayout());
-		game.add(this, BorderLayout.CENTER);
-		JPanel bottomRow = new JPanel();
+		JPanel buttonRow = new JPanel();
 		JButton undo = new JButton("Undo");
 			undo.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -72,14 +71,30 @@ public class View extends JComponent implements Observer {
 					layout.show(cards, MENUPANEL);
 			}});
 
-		bottomRow.add(undo);
-		bottomRow.add(pass);
-		bottomRow.add(surrender);
+		buttonRow.add(undo);
+		buttonRow.add(pass);
+		buttonRow.add(surrender);
 
-		game.add(new JPanel(), BorderLayout.NORTH);
-		game.add(bottomRow, BorderLayout.SOUTH);
-		game.add(new JPanel(), BorderLayout.EAST);
-		game.add(new JPanel(), BorderLayout.WEST);
+		GamePanel p1 = new GamePanel();//myModel, Color.BLUE
+		GamePanel p2 = new GamePanel();
+		GamePanel g1 = new GamePanel();
+		GamePanel g2 = new GamePanel();
+		
+		JSplitPane leftAndCenterSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, p1, this);
+		JSplitPane allThreeSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftAndCenterSplit, p2);
+		JSplitPane graveyardSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, g1, g2);
+		JSplitPane finalSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, allThreeSplit, graveyardSplit);
+		
+		leftAndCenterSplit.setResizeWeight(0.25);
+		allThreeSplit.setResizeWeight(0.75);
+		graveyardSplit.setResizeWeight(0.5);
+		finalSplit.setResizeWeight(0.75);
+
+		game.add(finalSplit, BorderLayout.CENTER);
+		game.add(buttonRow, BorderLayout.NORTH);
+		//game.add(new GamePanel(), BorderLayout.SOUTH);
+		//game.add(p1, BorderLayout.EAST);
+		//game.add(p2, BorderLayout.WEST);
 
 		// Add the two panels to the cards panel
 		cards.add(menuButtons, MENUPANEL);
@@ -118,7 +133,7 @@ public class View extends JComponent implements Observer {
 	public void paintComponent(Graphics _g) {
 		super.paintComponent(_g);
 		Graphics2D g = (Graphics2D) _g;
-		g.setColor(Color.GREEN.darker());
+		g.setColor(Color.BLUE.darker());
 		g.fillRect(0, 0, getWidth(), getHeight());
 		drawBoard(g, myModel.getBoard());
 	}
@@ -127,8 +142,8 @@ public class View extends JComponent implements Observer {
 	 * Draws the board field of this Board object
 	 */
 	public void drawBoard(Graphics2D g, Token[][] grid) {
-		int borderWeight = 4;
-		int tokenSize = 32;
+		int borderWeight = Math.min(getWidth(), getHeight())/100;
+		int tokenSize = Math.min(getWidth(), getHeight())/10 - 20;
 
 		int boardWidth = (tokenSize+borderWeight)*grid.length+borderWeight;
 		int boardHeight = (tokenSize+borderWeight)*grid[0].length+borderWeight;
