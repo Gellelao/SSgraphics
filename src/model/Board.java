@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Observable;
 import java.util.Stack;
 
+import code.Token;
 import src.model.PlayerToken;
 
 /**
@@ -39,6 +40,21 @@ public class Board extends Observable{
 	}
 
 	public Token[][] getBoard(){return board;}
+
+	public PlayerToken getP1() {return one;}
+	public PlayerToken getP2() {return two;}
+
+	public Token[][] getAvailable(PlayerToken p) {
+		String[][] names = p.getAvailable();
+		Token[][] grid = new Token[names.length][names[0].length];
+		// convert the token names into actual tokens
+		for(int i = 0; i < 5; i++) {
+			for(int j = 0; j < 5; j++) {
+				grid[i][j] = pieceNames.get(names[i][j]);
+			}
+		}
+		return grid;
+	}
 
 	/**
 	 * Is provided with a token and puts it into the board

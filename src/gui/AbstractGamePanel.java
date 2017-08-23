@@ -10,20 +10,13 @@ import javax.swing.JPanel;
 import src.model.Board;
 import src.model.Token;
 
-public class GamePanel extends JPanel{
+public abstract class AbstractGamePanel extends JPanel{
 	private static final long serialVersionUID = 1L;
-	private Board myModel;
-	private Color bgColour;
-	
-	public GamePanel(Board model, Color colour) {
-		myModel = model;
-		bgColour = colour;
-	}
-	
-	public void drawBoard(Graphics2D g, Token[][] grid) {
+
+	public void drawGrid(Graphics2D g, Token[][] grid) {
 		int borderWeight = Math.min(getWidth(), getHeight())/100;
 		int tokenSize = Math.min(getWidth(), getHeight())/10 - 20;
-		
+
 		int boardWidth = (tokenSize+borderWeight)*grid.length+borderWeight;
 		int boardHeight = (tokenSize+borderWeight)*grid[0].length+borderWeight;
 		// These "real" coords are based on the current size of the JPanel
@@ -38,7 +31,8 @@ public class GamePanel extends JPanel{
 			for(int j = 0; j < grid[0].length; j++) {
 				int x = realX+borderWeight+(i*(tokenSize+borderWeight));
 				int y = realY+borderWeight+(j*(tokenSize+borderWeight));
-				g.setColor(Color.GRAY);
+				//g.setColor(Color.GRAY);
+				g.setColor(getTileColour());
 				g.fillRect(x, y, tokenSize, tokenSize);
 				if(i == 2 && j == 2 && grid[i][j] == null) {
 					g.setColor(Color.YELLOW.darker());
@@ -54,7 +48,7 @@ public class GamePanel extends JPanel{
 			}
 		}
 	}
-	
+
 	private void drawToken(Graphics2D g, int x, int y, int size, Token p){
 		String[] tokenInfo = p.getImage();
 		if(tokenInfo[0].equals("1")) {
@@ -73,14 +67,17 @@ public class GamePanel extends JPanel{
 		else g.setColor(Color.YELLOW);
 		g.fillOval(x, y, size, size);
 		// Draw the red swords and shields
-		
+
 	}
-	
-	public void paintComponent(Graphics _g) {
-		super.paintComponent(_g);
-		Graphics2D g = (Graphics2D) _g;
-		g.setColor(bgColour);
-		g.fillRect(0, 0, getWidth(), getHeight());
-		drawBoard(g, myModel.getBoard());
+	protected void superPaint(Graphics g) {
+		super.paintComponent(g);
 	}
+
+	protected Color getTileColour() {
+		return Color.GRAY;
+	}
+
+	protected abstract Color getBGColour();
+
+	protected abstract void paintComponent(Graphics _g);
 }

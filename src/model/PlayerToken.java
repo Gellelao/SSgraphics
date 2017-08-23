@@ -52,10 +52,8 @@ public class PlayerToken implements Token{
 		}
 	}
 
-	// TODO: update this if I ever revert the 'available' etc lists to hold tokens rather than strings
-/*	public void listAvailable() {
+    public String[][] getAvailable() {
 		String[][] names = new String[5][5];
-		String message = " ________________\n/Available Tokens\\";
 		int cumulative = 0;
 		for(int i = 0; i < 5; i++) {
 			for(int j = 0; j < 5; j++) {
@@ -64,8 +62,8 @@ public class PlayerToken implements Token{
 				cumulative++;
 			}
 		}
-		board.draw(names, message);
-	}*/
+		return names;
+	}
 
 	public boolean pieceIsChanged(String piece){
 		return changedPieces.contains(piece);
