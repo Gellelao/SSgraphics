@@ -75,10 +75,10 @@ public class View extends JComponent implements Observer {
 		buttonRow.add(pass);
 		buttonRow.add(surrender);
 
-		playerPanel p1 = new playerPanel(myModel, Color.YELLOW);
-		playerPanel p2 = new playerPanel(myModel, Color.GREEN);
-		playerPanel g1 = new playerPanel(myModel, Color.GRAY);
-		playerPanel g2 = new playerPanel(myModel, Color.GRAY);
+		playerPanel p1 = new playerPanel(myModel, "p1");
+		playerPanel p2 = new playerPanel(myModel, "p2");
+		cemeteryPanel g1 = new cemeteryPanel(myModel, "p1");
+		cemeteryPanel g2 = new cemeteryPanel(myModel, "p2");
 
 		JSplitPane leftAndCenterSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, p1, this);
 		JSplitPane allThreeSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftAndCenterSplit, p2);
