@@ -30,14 +30,14 @@ public class PieceToken implements Token{
 		this.name = name;
 	}
 
-	/**
+/*	*//**
 	 * Gets the image of this piece, in the form of an array, with index 0 being the top row of the image,
 	 * index 1 being the center row of the image, and index 2 being the bottom row of the image.
 
 	 * Here "image" refers to the characters which represent the shape
 
 	 * @return an array of strings, stacking these strings on top of each other results in the image of the token
-	 */
+	 *//*
 	@Override
 	public String[] getImage(){
 		// First get the characters that will be drawn in each of the cardinal points:
@@ -49,9 +49,20 @@ public class PieceToken implements Token{
 		// Construct the image in three rows, stored in an array
 		String[] image = {"  " + N + "  ", W + name + E, "  " + S + "  "};
 		return image;
+	}*/
+	
+	@Override
+	public String[] getImage() {
+		String[] image = new String[5];
+		image[0] = name;
+		image[1] = Integer.toString(layout.get(0));
+		image[2] = Integer.toString(layout.get(1));
+		image[3] = Integer.toString(layout.get(2));
+		image[4] = Integer.toString(layout.get(3));
+		return image;
 	}
 
-	/**
+/*	*//**
 	 * A helper method used by getImage()
 	 *
 	 * @param i - an integer:
@@ -60,7 +71,7 @@ public class PieceToken implements Token{
 	 * 			  2 = shield
 	 * @param vertical - a boolean indicating to return the vertical or horizontal version of the character
 	 * @return a character representing a sword or shield, or a space.
-	 */
+	 *//*
 	private String getCorrespondingChar(int i, boolean vertical){
 		if(vertical){
 			if(i == 0)     return " ";
@@ -72,7 +83,7 @@ public class PieceToken implements Token{
 			else if(i == 1)return "--"; // Horizontal sword
 			else           return "||"; // Horizontal shield
 		}
-	}
+	}*/
 
 	@Override
 	public void rotate() {

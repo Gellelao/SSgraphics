@@ -44,27 +44,48 @@ public class Board extends Observable{
 	public PlayerToken getP2() {return two;}
 
 	public Token[][] getAvailable(PlayerToken p) {
-		String[][] names = p.getAvailable();
-		Token[][] grid = new Token[names.length][names[0].length];
-		// convert the token names into actual tokens
-		for(int i = 0; i < 5; i++) {
-			for(int j = 0; j < 5; j++) {
-				grid[i][j] = pieceNames.get(names[i][j]);
+		ArrayList<String> names = (ArrayList<String>) p.getAvailable();
+		String[][] nameArray = ListToGrid(names, 3, 8);
+		Token[][] tokens = namesToTokens(nameArray);
+		return tokens;
+	}
+
+	public Token[][] getCemetery() {
+		String[][] nameArray = ListToGrid(cemetery, 14, 4);
+		Token[][] tokens = namesToTokens(nameArray);
+		return tokens;
+	}
+
+	/**
+	 * Converts a list of strings into an array of string with the given height and width
+	 *
+	 * @param list
+	 * @param height
+	 * @param width
+	 * @return
+	 */
+	private String[][] ListToGrid(ArrayList<String> list, int height, int width){
+		String[][] grid = new String[height][width];
+		int cumulative = 0;
+		for(int i = 0; i < height; i++) {
+			for(int j = 0; j < width; j++) {
+				if(cumulative < list.size())
+					grid[i][j] = list.get(cumulative);
+				cumulative++;
 			}
 		}
 		return grid;
 	}
-	
-	public Token[][] getCemetery(PlayerToken p) {
-		String[][] names = p.getAvailable();
-		Token[][] grid = new Token[names.length][names[0].length];
+
+	private Token[][] namesToTokens(String[][] names){
+		Token[][] tokens = new Token[names.length][names[0].length];
 		// convert the token names into actual tokens
-		for(int i = 0; i < 5; i++) {
-			for(int j = 0; j < 5; j++) {
-				grid[i][j] = pieceNames.get(names[i][j]);
+		for(int i = 0; i < names.length; i++) {
+			for(int j = 0; j < names[0].length; j++) {
+				tokens[i][j] = pieceNames.get(names[i][j]);
 			}
 		}
-		return grid;
+		return tokens;
 	}
 
 	/**

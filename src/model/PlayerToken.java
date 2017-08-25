@@ -13,7 +13,8 @@ public class PlayerToken implements Token{
 	public String name;
 	private List<String> available;
 	private List<String> played;
-	private ArrayList<String> changedPieces;
+	private List<String> cemetery;
+	private List<String> changedPieces;
 
 	private int spawnX;
 	private int spawnY;
@@ -52,17 +53,8 @@ public class PlayerToken implements Token{
 		}
 	}
 
-    public String[][] getAvailable() {
-		String[][] names = new String[5][5];
-		int cumulative = 0;
-		for(int i = 0; i < 5; i++) {
-			for(int j = 0; j < 5; j++) {
-				if(cumulative < available.size())
-					names[i][j] = available.get(cumulative);
-				cumulative++;
-			}
-		}
-		return names;
+    public List<String> getAvailable() {
+		return available;
 	}
 
 	public boolean pieceIsChanged(String piece){

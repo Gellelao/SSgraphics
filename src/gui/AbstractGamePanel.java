@@ -12,16 +12,26 @@ import src.model.Token;
 
 public abstract class AbstractGamePanel extends JPanel{
 	private static final long serialVersionUID = 1L;
+	int borderWeight;
+	int tokenSize;
 
-	public void drawGrid(Graphics2D g, Token[][] grid) {
-		int borderWeight = Math.min(getWidth(), getHeight())/100;
-		int tokenSize = Math.min(getWidth(), getHeight())/10 - 20;
+	int realX;
+	int realY;
+
+	Token[][] grid;
+
+	public void drawGrid(Graphics2D g, Token[][] gridParam) {
+		this.grid = gridParam;
+
+		borderWeight = Math.min(getWidth(), getHeight())/100;
+		tokenSize    = Math.min(getWidth(), getHeight())/10 - Math.min(getWidth(), getHeight())/50;
 
 		int boardWidth = (tokenSize+borderWeight)*grid.length+borderWeight;
 		int boardHeight = (tokenSize+borderWeight)*grid[0].length+borderWeight;
+
 		// These "real" coords are based on the current size of the JPanel
-		int realX = getWidth()/2-boardWidth/2;
-		int realY = getHeight()/2-boardHeight/2;
+		realX = getWidth()/2-boardWidth/2;
+		realY = getHeight()/2-boardHeight/2;
 
 		// Draw the board grid background
 		g.setColor(Color.BLACK);
@@ -31,25 +41,13 @@ public abstract class AbstractGamePanel extends JPanel{
 			for(int j = 0; j < grid[0].length; j++) {
 				int x = realX+borderWeight+(i*(tokenSize+borderWeight));
 				int y = realY+borderWeight+(j*(tokenSize+borderWeight));
-				//g.setColor(Color.GRAY);
-				g.setColor(getTileColour());
-				g.fillRect(x, y, tokenSize, tokenSize);
-				if(i == 2 && j == 2 && grid[i][j] == null) {
-					g.setColor(Color.YELLOW.darker());
-					g.fillRect(x, y, tokenSize, tokenSize);
-				}
-				if(i == 7 && j == 7 && grid[i][j] == null) {
-					g.setColor(Color.GREEN.darker());
-					g.fillRect(x, y, tokenSize, tokenSize);
-				}
-				if(grid[i][j] != null) {
-					drawToken(g, x, y, tokenSize, grid[i][j]);
-				}
+
+				applyRules(g, i, j, x, y);
 			}
 		}
 	}
 
-	private void drawToken(Graphics2D g, int x, int y, int size, Token p){
+	protected void drawToken(Graphics2D g, int x, int y, int size, Token p){
 		String[] tokenInfo = p.getImage();
 		if(tokenInfo[0].equals("1")) {
 			g.setColor(Color.YELLOW.brighter());
@@ -62,22 +60,69 @@ public abstract class AbstractGamePanel extends JPanel{
 			return;
 		}
 		else if(tokenInfo[0].toUpperCase().equals(tokenInfo[0])) {
-			g.setColor(Color.GREEN);
+			g.setColor(Color.YELLOW);
 		}
-		else g.setColor(Color.YELLOW);
+		else g.setColor(Color.GREEN);
 		g.fillOval(x, y, size, size);
 		// Draw the red swords and shields
-
-	}
-	protected void superPaint(Graphics g) {
-		super.paintComponent(g);
+		
+		g.setColor(Color.RED);
+		int barWidth = size/6;
+			if(tokenInfo[1].equals("1")) {
+				// North Sword
+				g.fillRect(x + size/2-(barWidth/2), y, barWidth, size/2);
+			}
+			if(tokenInfo[1].equals("2")) {
+				// North Shield
+				g.fillRect(x, y, size, barWidth);
+			}
+			if(tokenInfo[2].equals("1")) {
+				// East Sword
+				g.fillRect(x+size/2-(barWidth/2), y + size/2-(barWidth/2), size/2, barWidth);
+			}
+			if(tokenInfo[2].equals("2")) {
+				// East Shield
+				g.fillRect(x+size-barWidth, y, barWidth, size);
+			}
+			if(tokenInfo[3].equals("1")) {
+				// South Sword
+				g.fillRect(x + size/2-(barWidth/2), y+size/2, barWidth, size/2);
+			}
+			if(tokenInfo[3].equals("2")) {
+				// South Shield
+				g.fillRect(x, y+size-barWidth, size, barWidth);
+			}
+			if(tokenInfo[4].equals("1")) {
+				// West Sword
+				g.fillRect(x, y + size/2-(barWidth/2), size/2+(barWidth/2)+1, barWidth);      // This +1 here is irritating
+			}
+			if(tokenInfo[4].equals("2")) {
+				// West Shield
+				g.fillRect(x, y, barWidth, size);
+			}
 	}
 
 	protected Color getTileColour() {
-		return Color.GRAY;
+		return Color.GRAY.darker();
 	}
+
+	protected abstract void drawAll(Graphics2D g);
 
 	protected abstract Color getBGColour();
 
-	protected abstract void paintComponent(Graphics _g);
+	protected void applyRules(Graphics g, int i, int j, int x, int y) {
+		g.setColor(getTileColour());
+		g.fillRect(x, y, tokenSize, tokenSize);
+		if(grid[i][j] != null) {
+			drawToken((Graphics2D) g, x, y, tokenSize, grid[i][j]);
+		}
+	}
+
+	public void paintComponent(Graphics _g) {
+		super.paintComponent(_g);
+		Graphics2D g = (Graphics2D) _g;
+		g.setColor(getBGColour());
+		g.fillRect(0, 0, getWidth(), getHeight());
+		drawAll(g);
+	}
 }

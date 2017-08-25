@@ -5,15 +5,17 @@ import java.awt.event.ActionListener;
 import java.util.*; import javax.swing.*;
 
 import src.model.Board;
-import src.model.Token;
 
-public class View extends JComponent implements Observer {
+public class View extends AbstractGamePanel implements Observer {
 	private static final long serialVersionUID = 1L;
 	private Board myModel;
 	private JFrame current;
 	private JPanel cards;
 	final static String MENUPANEL = "Card with menu buttons";
 	final static String GAMEPANEL = "Card with the game contents";
+	
+	final static int screenWidth = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().width;
+	final static int screenHeight= java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height;
 
 	public View(Board board) {
 
@@ -25,7 +27,8 @@ public class View extends JComponent implements Observer {
 
 		// "current" is the single JFrame that this program uses
 		current = new JFrame("Sword and Shield Game");
-		current.setBounds(700, 200, 500, 500);
+		current.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		current.setBounds(0, 0, screenWidth, screenHeight);
 
 		cards = new JPanel(new CardLayout());
 
@@ -75,19 +78,16 @@ public class View extends JComponent implements Observer {
 		buttonRow.add(pass);
 		buttonRow.add(surrender);
 
-		playerPanel p1 = new playerPanel(myModel, "p1");
-		playerPanel p2 = new playerPanel(myModel, "p2");
-		cemeteryPanel g1 = new cemeteryPanel(myModel, "p1");
-		cemeteryPanel g2 = new cemeteryPanel(myModel, "p2");
+		PlayerPanel p1 = new PlayerPanel(myModel, "p1");
+		PlayerPanel p2 = new PlayerPanel(myModel, "p2");
+		CemeteryPanel g1 = new CemeteryPanel(myModel);
 
 		JSplitPane leftAndCenterSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, p1, this);
 		JSplitPane allThreeSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftAndCenterSplit, p2);
-		JSplitPane graveyardSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, g1, g2);
-		JSplitPane finalSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, allThreeSplit, graveyardSplit);
+		JSplitPane finalSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, allThreeSplit, g1);
 
 		leftAndCenterSplit.setResizeWeight(0.25);
 		allThreeSplit.setResizeWeight(0.75);
-		graveyardSplit.setResizeWeight(0.5);
 		finalSplit.setResizeWeight(0.75);
 
 		game.add(finalSplit, BorderLayout.CENTER);
@@ -103,6 +103,53 @@ public class View extends JComponent implements Observer {
 		current.add(cards);
 		//current.pack();
 		current.setVisible(true);
+	}
+
+	@Override
+	protected void drawAll(Graphics2D g) {
+		super.drawGrid(g, myModel.getBoard());
+	}
+
+	@Override
+	protected void applyRules(Graphics g, int i, int j, int x, int y) {
+		if((i+j)%2 != 1) {
+			g.setColor(getTileColour().brighter());
+		}
+		else g.setColor(getTileColour().darker());
+		g.fillRect(x, y, tokenSize, tokenSize);
+		
+		if(i == 2 && j == 2 && grid[i][j] == null) {
+			g.setColor(Color.YELLOW.darker());
+			g.fillRect(x, y, tokenSize, tokenSize);
+		}
+		if(i == 7 && j == 7 && grid[i][j] == null) {
+			g.setColor(Color.GREEN.darker());
+			g.fillRect(x, y, tokenSize, tokenSize);
+		}
+		if(i == 0 && j < 2) {
+			g.setColor(getBGColour());
+			g.fillRect(x, y, tokenSize, tokenSize);
+		}
+		if(i < 2 && j == 0) {
+			g.setColor(getBGColour());
+			g.fillRect(x, y, tokenSize, tokenSize);
+		}
+		if(i == 9 && j > 7) {
+			g.setColor(getBGColour());
+			g.fillRect(x, y, tokenSize, tokenSize);
+		}
+		if(i > 7 && j == 9) {
+			g.setColor(getBGColour());
+			g.fillRect(x, y, tokenSize, tokenSize);
+		}
+		if(grid[i][j] != null) {
+			super.drawToken((Graphics2D) g, x, y, tokenSize, grid[i][j]);
+		}
+	}
+
+	@Override
+	protected Color getBGColour() {
+		return new Color(36, 62, 122);
 	}
 
 /*	public void play() {
@@ -126,21 +173,10 @@ public class View extends JComponent implements Observer {
 		current.setVisible(true);
 	}*/
 
-	public void printInfo() {
 
-	}
-
-	public void paintComponent(Graphics _g) {
-		super.paintComponent(_g);
-		Graphics2D g = (Graphics2D) _g;
-		g.setColor(Color.BLUE.darker());
-		g.fillRect(0, 0, getWidth(), getHeight());
-		drawBoard(g, myModel.getBoard());
-	}
-
-	/**
+/*	*//**
 	 * Draws the board field of this Board object
-	 */
+	 *//*
 	public void drawBoard(Graphics2D g, Token[][] grid) {
 		int borderWeight = Math.min(getWidth(), getHeight())/100;
 		int tokenSize = Math.min(getWidth(), getHeight())/10 - 20;
@@ -195,7 +231,7 @@ public class View extends JComponent implements Observer {
 		g.fillOval(x, y, size, size);
 		// Draw the red swords and shields
 
-	}
+	}*/
 
 	/**
 	 * Draws the provided 2D array of token names
@@ -205,7 +241,7 @@ public class View extends JComponent implements Observer {
 	 * @param names - 2D array of token names to draw
 	 * @param message - message to print at the top of the grid
 	 */
-	public void draw(String[][] names, String message) {
+	//public void draw(String[][] names, String message) {
 /*		Token[][] grid = new Token[names.length][names[0].length];
 		// convert the token names into actual tokens
 		for(int i = 0; i < 5; i++) {
@@ -236,7 +272,7 @@ public class View extends JComponent implements Observer {
 			}
 			System.out.print("\n");
 		}*/
-	}
+	//}
 
 
 
@@ -285,6 +321,7 @@ public class View extends JComponent implements Observer {
 	  }*/
 
 
-  public Dimension getPreferredSize() {return new Dimension(1200, 800);}
+  public Dimension getPreferredSize() {return new Dimension(screenWidth, screenHeight);}
   public void update(Observable arg0, Object arg1) {repaint();}
+
 }
