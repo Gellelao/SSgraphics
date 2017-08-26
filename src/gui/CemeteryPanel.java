@@ -15,15 +15,21 @@ public class CemeteryPanel extends AbstractGamePanel{
 	public CemeteryPanel(Board model) {
 		myModel = model;
 	}
-	
+
 	@Override
 	protected Color getBGColour() {
 		return Color.GRAY;
 	}
-	
+
 	@Override
 	protected void drawAll(Graphics2D g) {
 		super.drawGrid(g, myModel.getCemetery());
+	}
+
+	@Override
+	protected Controller getController() {
+		System.out.println("getController() method of CemeteryPanel should not be called/should do nothing. Returned null");
+		return null;
 	}
 
 }

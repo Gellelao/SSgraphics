@@ -22,6 +22,7 @@ public class Board extends Observable{
 
 	PlayerToken one;
 	PlayerToken two;
+	PlayerToken current;
 
 	public Board(){
 		board = new Token[10][10];
@@ -34,6 +35,8 @@ public class Board extends Observable{
 		two = new PlayerToken("2");
 		addToken(one, 1, 1);
 		addToken(two, 8, 8);
+
+		current = one;
 
 		initialiseMap();
 	}
@@ -54,6 +57,17 @@ public class Board extends Observable{
 		String[][] nameArray = ListToGrid(cemetery, 14, 4);
 		Token[][] tokens = namesToTokens(nameArray);
 		return tokens;
+	}
+
+	public PlayerToken getCurrent() {
+		return current;
+	}
+
+	public void switchCurrent() {
+		if(current.equals(one)) {    // TODO: if problems with player turns not switching, might be because this equals isn't comparing correctly
+			current = two;
+		}
+		else current = one;
 	}
 
 	/**

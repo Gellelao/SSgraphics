@@ -64,8 +64,8 @@ public abstract class AbstractGamePanel extends JPanel{
 		}
 		else g.setColor(Color.GREEN);
 		g.fillOval(x, y, size, size);
+
 		// Draw the red swords and shields
-		
 		g.setColor(Color.RED);
 		int barWidth = size/6;
 			if(tokenInfo[1].equals("1")) {
@@ -78,7 +78,7 @@ public abstract class AbstractGamePanel extends JPanel{
 			}
 			if(tokenInfo[2].equals("1")) {
 				// East Sword
-				g.fillRect(x+size/2-(barWidth/2), y + size/2-(barWidth/2), size/2, barWidth);
+				g.fillRect(x+size/2, y + size/2-(barWidth/2), size/2, barWidth);
 			}
 			if(tokenInfo[2].equals("2")) {
 				// East Shield
@@ -94,7 +94,7 @@ public abstract class AbstractGamePanel extends JPanel{
 			}
 			if(tokenInfo[4].equals("1")) {
 				// West Sword
-				g.fillRect(x, y + size/2-(barWidth/2), size/2+(barWidth/2)+1, barWidth);      // This +1 here is irritating
+				g.fillRect(x, y + size/2-(barWidth/2), size/2+(barWidth/2), barWidth);
 			}
 			if(tokenInfo[4].equals("2")) {
 				// West Shield
@@ -110,12 +110,20 @@ public abstract class AbstractGamePanel extends JPanel{
 
 	protected abstract Color getBGColour();
 
+	protected abstract Controller getController();
+
 	protected void applyRules(Graphics g, int i, int j, int x, int y) {
 		g.setColor(getTileColour());
 		g.fillRect(x, y, tokenSize, tokenSize);
 		if(grid[i][j] != null) {
 			drawToken((Graphics2D) g, x, y, tokenSize, grid[i][j]);
 		}
+	}
+
+	public boolean contains(int x, int y) {
+		if(x > 0 && x < getWidth() &&
+		   y > 0 && y < getHeight())return true;
+		return false;
 	}
 
 	public void paintComponent(Graphics _g) {
