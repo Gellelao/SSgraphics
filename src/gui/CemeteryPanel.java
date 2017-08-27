@@ -32,4 +32,9 @@ public class CemeteryPanel extends AbstractGamePanel{
 		return null;
 	}
 
+	@Override
+	public void addRegion(TokenRegion r) {
+		// Do nothing ,the cemetery does not need TokenReigons
+	}
+
 }

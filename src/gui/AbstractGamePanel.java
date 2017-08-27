@@ -36,12 +36,13 @@ public abstract class AbstractGamePanel extends JPanel{
 		// Draw the board grid background
 		g.setColor(Color.BLACK);
 		g.fillRect(realX, realY, boardWidth, boardHeight);
-		// Draw each tile's background
+		// Draw each tile
 		for(int i = 0; i < grid.length; i++) {
 			for(int j = 0; j < grid[0].length; j++) {
 				int x = realX+borderWeight+(i*(tokenSize+borderWeight));
 				int y = realY+borderWeight+(j*(tokenSize+borderWeight));
 
+				addRegion(new TokenRegion(grid[i][j], x, y, tokenSize));
 				applyRules(g, i, j, x, y);
 			}
 		}
@@ -67,7 +68,7 @@ public abstract class AbstractGamePanel extends JPanel{
 
 		// Draw the red swords and shields
 		g.setColor(Color.RED);
-		int barWidth = size/6;
+		int barWidth = size/7;
 			if(tokenInfo[1].equals("1")) {
 				// North Sword
 				g.fillRect(x + size/2-(barWidth/2), y, barWidth, size/2);
@@ -115,16 +116,13 @@ public abstract class AbstractGamePanel extends JPanel{
 	protected void applyRules(Graphics g, int i, int j, int x, int y) {
 		g.setColor(getTileColour());
 		g.fillRect(x, y, tokenSize, tokenSize);
+		
 		if(grid[i][j] != null) {
 			drawToken((Graphics2D) g, x, y, tokenSize, grid[i][j]);
 		}
 	}
-
-	public boolean contains(int x, int y) {
-		if(x > 0 && x < getWidth() &&
-		   y > 0 && y < getHeight())return true;
-		return false;
-	}
+	
+	public abstract void addRegion(TokenRegion r);
 
 	public void paintComponent(Graphics _g) {
 		super.paintComponent(_g);

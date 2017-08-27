@@ -5,22 +5,31 @@ import java.awt.event.ActionListener;
 import java.util.*; import javax.swing.*;
 
 import src.model.Board;
+import src.model.Token;
 
 public class BoardPanel extends AbstractGamePanel implements Observer {
 	private static final long serialVersionUID = 1L;
 	private Board myModel;
 	private JFrame current;
 	private JPanel cards;
+	private JPanel p1;
+	private JPanel p2;
 	final static String MENUPANEL = "Card with menu buttons";
 	final static String GAMEPANEL = "Card with the game contents";
+	final static String PLAYERTOKENPANEL = "Card with all of a player's tokens";
+	final static String TOKENSELECTIONPANEL = "Card with the four rotations of a token";
 
 	final static int screenWidth = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().width;
 	final static int screenHeight= java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height;
 
-	BoardPanelController control;
+	private BoardPanelController control;
+	private SuperController supControl;
+	private TokenSelectionPanel selectionPanel1;
+	private TokenSelectionPanel selectionPanel2;
+	private ArrayList<TokenRegion> regions;
 
 	public BoardPanel(Board board) {
-
+		regions = new ArrayList<TokenRegion>();
 
 		myModel = board;
 		myModel.addObserver(this);
@@ -42,8 +51,7 @@ public class BoardPanel extends AbstractGamePanel implements Observer {
 		JButton play = new JButton("Begin New Game");
 			play.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					CardLayout layout = (CardLayout) cards.getLayout();
-					layout.show(cards, GAMEPANEL);
+					switchToCard(cards, GAMEPANEL);
 				}});
 		JButton info = new JButton("Info");
 			info.addActionListener(new ActionListener() {
@@ -75,27 +83,39 @@ public class BoardPanel extends AbstractGamePanel implements Observer {
 		JButton surrender = new JButton("Surrender");
 			surrender.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					CardLayout layout = (CardLayout) cards.getLayout();
-					layout.show(cards, MENUPANEL);
+					switchToCard(cards, MENUPANEL);
 			}});
 
 		buttonRow.add(undo);
 		buttonRow.add(pass);
 		buttonRow.add(surrender);
 
-		PlayerPanel p1 = new PlayerPanel(myModel, "p1");
-		PlayerPanel p2 = new PlayerPanel(myModel, "p2");
+		PlayerPanel playerPanel1 = new PlayerPanel(myModel, "p1");
+		PlayerPanel playerPanel2 = new PlayerPanel(myModel, "p2");
+		selectionPanel1 = new TokenSelectionPanel(myModel, "p1");
+		selectionPanel2 = new TokenSelectionPanel(myModel, "p2");
+		
+		p1 = new JPanel(new CardLayout());
+			p1.add(playerPanel1, PLAYERTOKENPANEL);
+			p1.add(selectionPanel1, TOKENSELECTIONPANEL);
+		p2 = new JPanel(new CardLayout());
+			p2.add(playerPanel2, PLAYERTOKENPANEL);
+			p2.add(selectionPanel2, TOKENSELECTIONPANEL);
+			
 		CemeteryPanel g1 = new CemeteryPanel(myModel);
+		supControl = new SuperController(myModel, control, playerPanel1.getController(), playerPanel2.getController(), selectionPanel1.getController(), selectionPanel2.getController());
+		
 
-		JSplitPane leftAndCenterSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, p1, this);
+
+		JSplitPane middleSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, this, g1);
+		JSplitPane leftAndCenterSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, p1, middleSplit);
 		JSplitPane allThreeSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftAndCenterSplit, p2);
-		JSplitPane finalSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, allThreeSplit, g1);
 
-		leftAndCenterSplit.setResizeWeight(0.25);
+		leftAndCenterSplit.setResizeWeight(0.33);
 		allThreeSplit.setResizeWeight(0.75);
-		finalSplit.setResizeWeight(0.75);
+		middleSplit.setResizeWeight(0.75);
 
-		game.add(finalSplit, BorderLayout.CENTER);
+		game.add(allThreeSplit, BorderLayout.CENTER);
 		game.add(buttonRow, BorderLayout.NORTH);
 		//game.add(new GamePanel(), BorderLayout.SOUTH);
 		//game.add(p1, BorderLayout.EAST);
@@ -108,6 +128,29 @@ public class BoardPanel extends AbstractGamePanel implements Observer {
 		current.add(cards);
 		//current.pack();
 		current.setVisible(true);
+	}
+	
+	public void setSelectionPanelToken1(Token t){
+		selectionPanel1.setTokenToDraw(t);
+	}
+	
+	public void setSelectionPanelToken2(Token t){
+		selectionPanel2.setTokenToDraw(t);
+	}
+	
+	public void switchToCard(JPanel p, String s){
+		CardLayout layout = (CardLayout) p.getLayout();
+		layout.show(p, s);
+	}
+	
+	public void switchP1Card(String s){
+		CardLayout layout = (CardLayout) p1.getLayout();
+		layout.show(p1, s);
+	}
+	
+	public void switchP2Card(String s){
+		CardLayout layout = (CardLayout) p2.getLayout();
+		layout.show(p2, s);
 	}
 
 	@Override
@@ -160,6 +203,11 @@ public class BoardPanel extends AbstractGamePanel implements Observer {
 	@Override
 	protected Controller getController() {
 		return control;
+	}
+	
+	@Override
+	public void addRegion(TokenRegion r) {
+		regions.add(r);
 	}
 
 

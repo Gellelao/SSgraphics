@@ -101,7 +101,37 @@ public class Board extends Observable{
 		}
 		return tokens;
 	}
+	
+	public Token[][] getRotations(Token t){
+		Token[][] rotations = new Token[4][1];
+		rotations[0][0] = t;
+		Token t2 = t.copy();
+		t2.rotate();
+		rotations[1][0] = t2;
+		Token t3 = t2.copy();
+		t3.rotate();
+		rotations[2][0] = t3;
+		Token t4 = t3.copy();
+		t4.rotate();
+		rotations[3][0] = t4;
+/*		for(int i = 0; i < 4; i++){
+			rotations[i][0] = t;
+			t.rotate();
+		}*/
+		return rotations;
+	}
 
+	/**
+	 * Is provided with a token and puts it into the board
+	 * Automatically creates in the spawn tile of the current player
+	 * so does not need creation coordinates
+	 *
+	 * @param t token
+	 */
+	public void spawnToken(Token t) {
+		board[current.getSpawnX()][current.getSpawnY()] = t;
+	}
+	
 	/**
 	 * Is provided with a token and puts it into the board
 	 * Does not draw the board afterwards because this is currently only used by

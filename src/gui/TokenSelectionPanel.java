@@ -1,28 +1,32 @@
 package src.gui;
 
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
 import src.model.Board;
-import src.model.PlayerToken;
 import src.model.Token;
 
-public class PlayerPanel extends AbstractGamePanel{
+public class TokenSelectionPanel extends AbstractGamePanel{
 	private static final long serialVersionUID = 1L;
-	private PlayerToken player;
+
 	private Color colour;
+	private TokenSelectionPanelController control;
 	private Board myModel;
-	private PlayerPanelController control;
+	
+	private Token toDraw;
+	private int x;
+	private int y;
+	private int size;
+	private int numberOfTurns;
 	
 	private ArrayList<TokenRegion> regions;
 
-	public PlayerPanel(Board model, String player) {
+	public TokenSelectionPanel(Board model, String player) {
 		myModel = model;
-		control = new PlayerPanelController(myModel, this);
+		control = new TokenSelectionPanelController(myModel, this);
 		
 		this.addKeyListener(control);
 		this.addMouseListener(control);
@@ -30,30 +34,35 @@ public class PlayerPanel extends AbstractGamePanel{
 		regions = new ArrayList<TokenRegion>();
 		
 		if(player.equals("p1")) {
-			this.player = model.getP1();
 			this.colour = new Color(255, 249, 81);
 		}
 		else {
-			this.player = model.getP2();
 			this.colour = new Color(86, 196, 64);
 		}
 	}
 	
+	public void setTokenToDraw(Token t){
+		toDraw = t;
+	}
+	
 	public Token getToken(int x, int y){
-		for(TokenRegion r : regions){
-			if(r.contains(x, y))return r.getToken();
+		for(int i = 0; i < 4; i++){
+			if(regions.get(i).contains(x, y)){
+				numberOfTurns = i;
+				return regions.get(i).getToken();
+			}
 		}
 		return null;
+	}
+	
+	@Override
+	protected void drawAll(Graphics2D g) {
+		super.drawGrid(g, myModel.getRotations(toDraw));
 	}
 
 	@Override
 	protected Color getBGColour() {
 		return colour;
-	}
-
-	@Override
-	protected void drawAll(Graphics2D g) {
-		super.drawGrid(g, myModel.getAvailable(player));
 	}
 
 	@Override
@@ -65,8 +74,6 @@ public class PlayerPanel extends AbstractGamePanel{
 	public void addRegion(TokenRegion r) {
 		regions.add(r);
 	}
+
 	
-	public PlayerToken getPlayer(){
-		return player;
-	}
 }

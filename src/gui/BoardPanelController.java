@@ -12,6 +12,7 @@ public class BoardPanelController implements Controller, KeyListener, MouseListe
 	// Maybe move this commandHistroy to the board and manage it there
 	private Stack<String> commandHistory;
 	private BoardPanel panel;
+	private SuperController superC;
 
 	public BoardPanelController(Board board, BoardPanel panel) {
 		myModel = board;
@@ -28,6 +29,11 @@ public class BoardPanelController implements Controller, KeyListener, MouseListe
 		case 's': return;
 		case 'd': return;
 		}
+	}
+	
+	@Override
+	public AbstractGamePanel getPanel(){
+		return panel;
 	}
 
 	@Override
@@ -105,5 +111,10 @@ public class BoardPanelController implements Controller, KeyListener, MouseListe
 			}
 			return lastCommand;
 		}
+	}
+
+	@Override
+	public void setSuper(SuperController s) {
+		this.superC = s;
 	}
 }
