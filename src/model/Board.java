@@ -130,6 +130,8 @@ public class Board extends Observable{
 	 */
 	public void spawnToken(Token t) {
 		board[current.getSpawnX()][current.getSpawnY()] = t;
+	    setChanged();
+	    notifyObservers();
 	}
 	
 	/**
@@ -180,6 +182,7 @@ public class Board extends Observable{
 	public void moveToken(String name, String dir) {
 		int row = getTokenRow(name);
 		int col = getTokenCol(name);
+		System.out.println("moving "+ dir);
 
 		switch(dir){
 		case("up"):

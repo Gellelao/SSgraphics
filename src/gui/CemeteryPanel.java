@@ -14,6 +14,7 @@ public class CemeteryPanel extends AbstractGamePanel{
 
 	public CemeteryPanel(Board model) {
 		myModel = model;
+		this.setFocusable(false);
 	}
 
 	@Override

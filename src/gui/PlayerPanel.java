@@ -26,6 +26,7 @@ public class PlayerPanel extends AbstractGamePanel{
 		
 		this.addKeyListener(control);
 		this.addMouseListener(control);
+		this.setFocusable(false);
 		
 		regions = new ArrayList<TokenRegion>();
 		

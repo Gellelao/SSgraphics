@@ -37,14 +37,14 @@ public class BoardPanel extends AbstractGamePanel implements Observer {
 		control = new BoardPanelController(board, this);
 		this.addKeyListener(control);
 		this.addMouseListener(control);
-		this.setFocusable(true);
-
 		// "current" is the single JFrame that this program uses
 		current = new JFrame("Sword and Shield Game");
+		current.setFocusable(false);
 		current.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		current.setBounds(0, 0, screenWidth, screenHeight);
 
 		cards = new JPanel(new CardLayout());
+		cards.setFocusable(false);
 
 		// Make the menu panel
 		JPanel menuButtons = new JPanel();
@@ -53,19 +53,23 @@ public class BoardPanel extends AbstractGamePanel implements Observer {
 				public void actionPerformed(ActionEvent e) {
 					switchToCard(cards, GAMEPANEL);
 				}});
+			play.setFocusable(false);
 		JButton info = new JButton("Info");
 			info.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					current.add(new JLabel("Made by Deacon, 2017"));
 				}});
+			info.setFocusable(false);
 		JButton quit = new JButton("Quit");
 			quit.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					System.exit(1);
 				}});
+			quit.setFocusable(false);
 		menuButtons.add(play);
 		menuButtons.add(info);
 		menuButtons.add(quit);
+		menuButtons.setFocusable(false);
 
 		// Make the game panel
 		JPanel game = new JPanel(new BorderLayout());
@@ -75,20 +79,24 @@ public class BoardPanel extends AbstractGamePanel implements Observer {
 				public void actionPerformed(ActionEvent e) {
 				control.undo();
 			}});
+			undo.setFocusable(false);
 		JButton pass = new JButton("Pass");
 			pass.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 				// pass method
 			}});
+			pass.setFocusable(false);
 		JButton surrender = new JButton("Surrender");
 			surrender.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					switchToCard(cards, MENUPANEL);
 			}});
+			surrender.setFocusable(false);
 
 		buttonRow.add(undo);
 		buttonRow.add(pass);
 		buttonRow.add(surrender);
+		buttonRow.setFocusable(false);
 
 		PlayerPanel playerPanel1 = new PlayerPanel(myModel, "p1");
 		PlayerPanel playerPanel2 = new PlayerPanel(myModel, "p2");
@@ -105,8 +113,13 @@ public class BoardPanel extends AbstractGamePanel implements Observer {
 		CemeteryPanel g1 = new CemeteryPanel(myModel);
 		supControl = new SuperController(myModel, control, playerPanel1.getController(), playerPanel2.getController(), selectionPanel1.getController(), selectionPanel2.getController());
 		
-
-
+		p1.setFocusable(false);
+		p2.setFocusable(false);
+		playerPanel1.setFocusable(false);
+		playerPanel2.setFocusable(false);
+		selectionPanel1.setFocusable(false);
+		selectionPanel2.setFocusable(false);
+		
 		JSplitPane middleSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, this, g1);
 		JSplitPane leftAndCenterSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, p1, middleSplit);
 		JSplitPane allThreeSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftAndCenterSplit, p2);
@@ -127,6 +140,8 @@ public class BoardPanel extends AbstractGamePanel implements Observer {
 
 		current.add(cards);
 		//current.pack();
+		this.setFocusable(true);
+		this.requestFocusInWindow();
 		current.setVisible(true);
 	}
 	
@@ -151,6 +166,13 @@ public class BoardPanel extends AbstractGamePanel implements Observer {
 	public void switchP2Card(String s){
 		CardLayout layout = (CardLayout) p2.getLayout();
 		layout.show(p2, s);
+	}
+	
+	public Token getToken(int x, int y){
+		for(TokenRegion r : regions){
+			if(r.contains(x, y))return r.getToken();
+		}
+		return null;
 	}
 
 	@Override
@@ -211,7 +233,7 @@ public class BoardPanel extends AbstractGamePanel implements Observer {
 	}
 
 
-  public Dimension getPreferredSize() {return new Dimension(screenWidth, screenHeight);}
+  public Dimension getPreferredSize() {return new Dimension(screenWidth, screenHeight);}   //0, 0);}
   public void update(Observable arg0, Object arg1) {repaint();}
 
 }

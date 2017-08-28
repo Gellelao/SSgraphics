@@ -6,12 +6,14 @@ import java.awt.event.MouseListener;
 import java.util.Stack;
 
 import src.model.Board;
+import src.model.Token;
 
 public class BoardPanelController implements Controller, KeyListener, MouseListener {
 	private Board myModel;
 	// Maybe move this commandHistroy to the board and manage it there
 	private Stack<String> commandHistory;
 	private BoardPanel panel;
+	Token selected = null;
 	private SuperController superC;
 
 	public BoardPanelController(Board board, BoardPanel panel) {
@@ -20,14 +22,17 @@ public class BoardPanelController implements Controller, KeyListener, MouseListe
 		this.panel = panel;
 	}
 
-	public void keyPressed(KeyEvent e) {}
+	public void keyPressed(KeyEvent e) {
+		System.out.println("KEYPressed");}
 	public void keyReleased(KeyEvent e) {}
 	public void keyTyped(KeyEvent e) {
+		System.out.println("KEYTYPED");
+		if(selected == null)return;
 		switch (e.getKeyChar()) {
-		case 'w': return;
-		case 'a': return;
-		case 's': return;
-		case 'd': return;
+		case 'w': System.out.println("W"); return;//myModel.moveToken(selected.toString(), "up");  // TODO: Note the name is used here not the token - may cause issues
+		case 'a': myModel.moveToken(selected.toString(), "left"); return;
+		case 's': myModel.moveToken(selected.toString(), "down"); return;
+		case 'd': myModel.moveToken(selected.toString(), "right"); return;
 		}
 	}
 	
@@ -40,8 +45,11 @@ public class BoardPanelController implements Controller, KeyListener, MouseListe
 	public void mouseClicked(MouseEvent e) {
 		int mouseX = e.getX();
 		int mouseY = e.getY();
-		System.out.println("BoardPanelController: [" + mouseX +"][" + mouseY + "]");
+		if(selected == null)selected = panel.getToken(mouseX, mouseY);
+		//else panel.checkForEdgeClick(selected);
+		panel.repaint();
 	}
+	
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
