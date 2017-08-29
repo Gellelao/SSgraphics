@@ -37,6 +37,7 @@ public class BoardPanel extends AbstractGamePanel implements Observer {
 		control = new BoardPanelController(board, this);
 		this.addKeyListener(control);
 		this.addMouseListener(control);
+		this.setFocusable(true);
 		// "current" is the single JFrame that this program uses
 		current = new JFrame("Sword and Shield Game");
 		current.setFocusable(false);
@@ -140,7 +141,6 @@ public class BoardPanel extends AbstractGamePanel implements Observer {
 
 		current.add(cards);
 		//current.pack();
-		this.setFocusable(true);
 		this.requestFocusInWindow();
 		current.setVisible(true);
 	}
