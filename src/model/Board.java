@@ -132,6 +132,11 @@ public class Board extends Observable{
 		}*/
 		return rotations;
 	}
+	
+	public void notifyObs(){
+		setChanged();
+    	notifyObservers();
+	}
 
 	/**
 	 * Is provided with a token and puts it into the board
@@ -147,8 +152,7 @@ public class Board extends Observable{
 			current.removeFromAvailable(t.toString());
 			current.addToPlayed(t.toString());
 			
-	    	setChanged();
-	    	notifyObservers();
+	    	notifyObs();
 		}
 	}
 	
@@ -260,7 +264,7 @@ public class Board extends Observable{
 		for(int i = 0; i < 2; i++) {
 			for(int j = 0; j < 2; j++) {
 				if(board[i][j] != null && !board[i][j].toString().equals("1")){
-					cemetery.add(board[row][col].toString());// Remove this line for a different set of bugs
+					cemetery.add(board[i][j].toString());// Remove this line for a different set of bugs
 					board[i][j] = null;
 				}
 			}
@@ -268,13 +272,13 @@ public class Board extends Observable{
 		for(int i = 8; i < 10; i++) {
 			for(int j = 8; j < 10; j++) {
 				if(board[i][j] != null && !board[i][j].toString().equals("2")){
-					cemetery.add(board[row][col].toString());// Remove this line for a different set of bugs
+					cemetery.add(board[i][j].toString());// Remove this line for a different set of bugs
 					board[i][j] = null;
 				}
 			}
 		}
-	    setChanged();
-	    notifyObservers();
+
+		notifyObs();
 	}
 
 	public void printCemetery(){

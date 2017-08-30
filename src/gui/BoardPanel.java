@@ -9,6 +9,7 @@ import src.model.Token;
 
 public class BoardPanel extends AbstractGamePanel {
 	private static final long serialVersionUID = 1L;
+	
 	private Board myModel;
 	private BoardPanelController control;
 	private ArrayList<TokenRegion> regions;
@@ -29,6 +30,7 @@ public class BoardPanel extends AbstractGamePanel {
 		for(TokenRegion r : regions){
 			if(r.contains(x, y)){
 				selected = r.getToken();
+				myModel.notifyObs();
 				return r.getToken();
 			}
 		}
@@ -48,6 +50,7 @@ public class BoardPanel extends AbstractGamePanel {
 				}
 			}
 		}
+		// Important:
 		this.requestFocusInWindow();
 	}
 
@@ -85,6 +88,15 @@ public class BoardPanel extends AbstractGamePanel {
 		}
 		if(grid[i][j] != null) {
 			super.drawToken((Graphics2D) g, x, y, tokenSize, grid[i][j]);
+			if(myModel.getCurrent().pieceIsChanged(grid[i][j].toString())){
+				g.setColor(Color.BLACK);
+				g.fillRect(x+1, y+1, 22, 22);
+				g.setColor(Color.WHITE);
+				g.fillRect(x+2, y+2, 20, 20);
+				g.setColor(Color.BLACK);
+				g.drawLine(x+2, y+2, x+22, y+22);
+				g.drawLine(x+22, y+2, x+2, y+22);
+			}
 		}
 	}
 

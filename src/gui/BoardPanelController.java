@@ -10,7 +10,6 @@ import src.model.Token;
 
 public class BoardPanelController implements Controller, KeyListener, MouseListener {
 	private Board myModel;
-	// Maybe move this commandHistroy to the board and manage it there
 	private BoardPanel panel;
 	Token selected = null;
 	private SuperController superC;
@@ -41,8 +40,9 @@ public class BoardPanelController implements Controller, KeyListener, MouseListe
 	public void mouseClicked(MouseEvent e) {
 		int mouseX = e.getX();
 		int mouseY = e.getY();
+		//if(selected == null)
+		selected = panel.getToken(mouseX, mouseY);
 		System.out.println(selected);
-		if(selected == null)selected = panel.getToken(mouseX, mouseY);
 		//else panel.checkForEdgeClick(selected);
 		//panel.repaint();
 	}

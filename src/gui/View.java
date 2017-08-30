@@ -90,7 +90,7 @@ public class View extends JFrame implements Observer{
 		JButton pass = new JButton("Pass");
 			pass.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-				// pass method
+					supControl.pass();
 			}});
 			pass.setFocusable(false);
 		JButton surrender = new JButton("Surrender");

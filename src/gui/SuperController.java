@@ -35,11 +35,15 @@ public class SuperController {
 	}
 	
 	public void tokenSelect(Token t, PlayerToken p){
-		if(phase != 0) return;
+		if(phase != 0){
+			System.out.println("Not the correct phase");
+			return;
+		}
 		if(p.toString().equals(myModel.getCurrent().toString())){
 			view.setSelectionPanelToken(t, p.toString());
 			view.switchPlayerCard("Card with the four rotations of a token", p.toString());
 		}
+		else System.out.println("You can only click your pieces");
 /*		if(p.getImage()[0].equals("1")){
 			view.setSelectionPanelToken1(t);
 			view.switchP1Card("Card with the four rotations of a token");
@@ -58,10 +62,24 @@ public class SuperController {
 	}
 	
 	public void selectDirection(String name, String direction){
-		if(phase != 1)return;
+		if(phase != 1){
+			System.out.println("Not the correct phase");
+			return;
+		}
 		if(myModel.getCurrent().pieceIsChanged(name)){
 			System.out.println("You have already changed that piece");
 			return;
+		}
+		myModel.moveToken(name, direction);
+		myModel.getCurrent().changePiece(name);
+	}
+	
+	public void pass(){
+		System.out.println("pass");
+		phase++;
+		if(phase > 1){
+			myModel.switchCurrent();
+			phase = 0;
 		}
 	}
 	
