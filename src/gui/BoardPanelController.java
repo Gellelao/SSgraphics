@@ -11,7 +11,6 @@ import src.model.Token;
 public class BoardPanelController implements Controller, KeyListener, MouseListener {
 	private Board myModel;
 	private BoardPanel panel;
-	Token selected = null;
 	private SuperController superC;
 
 	public BoardPanelController(Board board, BoardPanel panel) {
@@ -22,6 +21,7 @@ public class BoardPanelController implements Controller, KeyListener, MouseListe
 	public void keyPressed(KeyEvent e) {}
 	public void keyReleased(KeyEvent e) {}
 	public void keyTyped(KeyEvent e) {
+		Token selected = superC.getSelected();
 		if(selected == null)return;
 		switch (e.getKeyChar()) {
 		case 'w': superC.selectDirection(selected.toString(), "up"); return;    // TODO: Note the name is used here not the token - may cause issues
@@ -31,6 +31,10 @@ public class BoardPanelController implements Controller, KeyListener, MouseListe
 		}
 	}
 	
+	public Token getSuperSelected() {
+		return superC.getSelected();
+	}
+
 	@Override
 	public AbstractGamePanel getPanel(){
 		return panel;
@@ -41,12 +45,11 @@ public class BoardPanelController implements Controller, KeyListener, MouseListe
 		int mouseX = e.getX();
 		int mouseY = e.getY();
 		//if(selected == null)
-		selected = panel.getToken(mouseX, mouseY);
-		System.out.println(selected);
+		superC.attemptToSelect(panel.getToken(mouseX, mouseY));
 		//else panel.checkForEdgeClick(selected);
 		//panel.repaint();
 	}
-	
+
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub

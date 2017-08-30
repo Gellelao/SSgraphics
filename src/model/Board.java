@@ -73,11 +73,11 @@ public class Board extends Observable{
 		one.clearChangedPieces();
 		two.clearChangedPieces();
 	}
-	
+
 	public String popCommandHistory(){
 		return commandHistory.pop();
 	}
-	
+
 	public void pushCommandHistory(String s){
 		commandHistory.push(s);
 	}
@@ -113,7 +113,7 @@ public class Board extends Observable{
 		}
 		return tokens;
 	}
-	
+
 	public Token[][] getRotations(Token t){
 		Token[][] rotations = new Token[4][1];
 		rotations[0][0] = t;
@@ -132,10 +132,14 @@ public class Board extends Observable{
 		}*/
 		return rotations;
 	}
-	
+
 	public void notifyObs(){
 		setChanged();
     	notifyObservers();
+	}
+
+	public boolean currentSpawnOccupied() {
+		return board[current.getSpawnX()][current.getSpawnY()] != null;
 	}
 
 	/**
@@ -146,16 +150,16 @@ public class Board extends Observable{
 	 * @param t token
 	 */
 	public void spawnToken(Token t) {
-		if(board[current.getSpawnX()][current.getSpawnY()] == null){
+		if(!currentSpawnOccupied()){
 			board[current.getSpawnX()][current.getSpawnY()] = t;
 
 			current.removeFromAvailable(t.toString());
 			current.addToPlayed(t.toString());
-			
+
 	    	notifyObs();
 		}
 	}
-	
+
 	/**
 	 * Is provided with a token and puts it into the board
 	 * Does not draw the board afterwards because this is currently only used by

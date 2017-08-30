@@ -17,19 +17,19 @@ public class PlayerPanel extends AbstractGamePanel{
 	private Color colour;
 	private Board myModel;
 	private PlayerPanelController control;
-	
+
 	private ArrayList<TokenRegion> regions;
 
 	public PlayerPanel(Board model, String player) {
 		myModel = model;
 		control = new PlayerPanelController(myModel, this);
-		
+
 		this.addKeyListener(control);
 		this.addMouseListener(control);
 		this.setFocusable(false);
-		
+
 		regions = new ArrayList<TokenRegion>();
-		
+
 		if(player.equals("p1")) {
 			this.player = model.getP1();
 			this.colour = new Color(255, 249, 81);
@@ -39,7 +39,7 @@ public class PlayerPanel extends AbstractGamePanel{
 			this.colour = new Color(86, 196, 64);
 		}
 	}
-	
+
 	public Token getToken(int x, int y){
 		for(TokenRegion r : regions){
 			if(r.contains(x, y))return r.getToken();
@@ -65,9 +65,10 @@ public class PlayerPanel extends AbstractGamePanel{
 
 	@Override
 	public void addRegion(TokenRegion r) {
+		if(r.getToken() == null)return;
 		regions.add(r);
 	}
-	
+
 	public PlayerToken getPlayer(){
 		return player;
 	}

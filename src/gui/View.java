@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.WindowConstants;
@@ -39,6 +40,8 @@ public class View extends JFrame implements Observer{
 	private TokenSelectionPanel selectionPanel1;
 	private TokenSelectionPanel selectionPanel2;
 
+	String message = "Welcome";
+
 	public View(Board board) {
 
 		myModel = board;
@@ -54,6 +57,7 @@ public class View extends JFrame implements Observer{
 		cards.setFocusable(false);
 
 		// Make the menu panel
+		JPanel menuPanel = new JPanel(new BorderLayout());
 		JPanel menuButtons = new JPanel();
 		JButton play = new JButton("Begin New Game");
 			play.addActionListener(new ActionListener() {
@@ -64,7 +68,7 @@ public class View extends JFrame implements Observer{
 		JButton info = new JButton("Info");
 			info.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					// show a message of some kind
+					JOptionPane.showMessageDialog(null, "Made by Deacon McIntyre, 2017");
 				}});
 			info.setFocusable(false);
 		JButton quit = new JButton("Quit");
@@ -76,7 +80,12 @@ public class View extends JFrame implements Observer{
 		menuButtons.add(play);
 		menuButtons.add(info);
 		menuButtons.add(quit);
+		menuPanel.add(menuButtons, BorderLayout.NORTH);
+		menuPanel.add(new JLabel("Sword and Shield Game", JLabel.CENTER), BorderLayout.CENTER);
+
 		menuButtons.setFocusable(false);
+		menuPanel.setFocusable(false);
+
 
 		// Make the game panel
 		JPanel game = new JPanel(new BorderLayout());
@@ -96,6 +105,13 @@ public class View extends JFrame implements Observer{
 		JButton surrender = new JButton("Surrender");
 			surrender.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					String playerName;
+					if(myModel.getCurrent().toString().equals("1")){
+						playerName = "Green";
+					}
+					else playerName = "Yellow";
+
+					JOptionPane.showMessageDialog(null, playerName + " Player Wins!");
 					switchToCard(cards, MENUPANEL);
 			}});
 			surrender.setFocusable(false);
@@ -110,24 +126,24 @@ public class View extends JFrame implements Observer{
 		PlayerPanel playerPanel2 = new PlayerPanel(myModel, "p2");
 		selectionPanel1 = new TokenSelectionPanel(myModel, "p1");
 		selectionPanel2 = new TokenSelectionPanel(myModel, "p2");
-		
+
 		p1 = new JPanel(new CardLayout());
 			p1.add(playerPanel1, PLAYERTOKENPANEL);
 			p1.add(selectionPanel1, TOKENSELECTIONPANEL);
 		p2 = new JPanel(new CardLayout());
 			p2.add(playerPanel2, PLAYERTOKENPANEL);
 			p2.add(selectionPanel2, TOKENSELECTIONPANEL);
-			
+
 		CemeteryPanel g1 = new CemeteryPanel(myModel);
 		supControl = new SuperController(myModel, this, boardPanel.getController(), playerPanel1.getController(), playerPanel2.getController(), selectionPanel1.getController(), selectionPanel2.getController());
-		
+
 		p1.setFocusable(false);
 		p2.setFocusable(false);
 		playerPanel1.setFocusable(false);
 		playerPanel2.setFocusable(false);
 		selectionPanel1.setFocusable(false);
 		selectionPanel2.setFocusable(false);
-		
+
 		JSplitPane middleSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, boardPanel, g1);
 		JSplitPane leftAndCenterSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, p1, middleSplit);
 		JSplitPane allThreeSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftAndCenterSplit, p2);
@@ -136,26 +152,29 @@ public class View extends JFrame implements Observer{
 		allThreeSplit.setResizeWeight(0.75);
 		middleSplit.setResizeWeight(0.75);
 
+		//JLabel turnInfo = new JLabel("Sword and Shield Game", JLabel.CENTER), BorderLayout.CENTER);
+
 		game.add(buttonRow, BorderLayout.NORTH);
+		//game.add(new JLabel(message, JLabel.CENTER), BorderLayout.NORTH);
 		game.add(allThreeSplit, BorderLayout.CENTER);
 		//game.add(new GamePanel(), BorderLayout.SOUTH);
 		//game.add(p1, BorderLayout.EAST);
 		//game.add(p2, BorderLayout.WEST);
 
 		// Add the two panels to the cards panel
-		cards.add(menuButtons, MENUPANEL);
+		cards.add(menuPanel, MENUPANEL);
 		cards.add(game, GAMEPANEL);
 
 		this.add(cards);
 		this.setVisible(true);
 	}
-	
+
 	public void setSelectionPanelToken(Token t, String player){
 		if(player.equals("1"))
 			selectionPanel1.setTokenToDraw(t);
 		else selectionPanel2.setTokenToDraw(t);
 	}
-	
+
 	public void switchPlayerCard(String s, String player){
 		if(player.equals("1")){
 			CardLayout layout = (CardLayout) p1.getLayout();
@@ -166,30 +185,30 @@ public class View extends JFrame implements Observer{
 			layout.show(p2, s);
 		}
 	}
-	
+
 /*	public void setSelectionPanelToken1(Token t){
 		selectionPanel1.setTokenToDraw(t);
 	}
-	
+
 	public void setSelectionPanelToken2(Token t){
 		selectionPanel2.setTokenToDraw(t);
 	}*/
-	
+
 	public void switchToCard(JPanel p, String s){
 		CardLayout layout = (CardLayout) p.getLayout();
 		layout.show(p, s);
 	}
-	
+
 /*	public void switchP1Card(String s){
 		CardLayout layout = (CardLayout) p1.getLayout();
 		layout.show(p1, s);
 	}
-	
+
 	public void switchP2Card(String s){
 		CardLayout layout = (CardLayout) p2.getLayout();
 		layout.show(p2, s);
 	}*/
-	
+
 	public Dimension getPreferredSize() {return new Dimension(screenWidth, screenHeight);}   //0, 0);}
 	 public void update(Observable arg0, Object arg1) {repaint();}
 }

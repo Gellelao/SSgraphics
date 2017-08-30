@@ -9,27 +9,27 @@ import src.model.Token;
 
 public class BoardPanel extends AbstractGamePanel {
 	private static final long serialVersionUID = 1L;
-	
+
 	private Board myModel;
 	private BoardPanelController control;
 	private ArrayList<TokenRegion> regions;
 	private Token selected;
-	
+	String message = "Welcome";
+
 	public BoardPanel(Board model){
 		myModel = model;
 		control = new BoardPanelController(myModel, this);
 		regions = new ArrayList<TokenRegion>();
-		
+
 
 		this.addKeyListener(control);
 		this.addMouseListener(control);
 		this.setFocusable(true);
 	}
-	
+
 	public Token getToken(int x, int y){
 		for(TokenRegion r : regions){
 			if(r.contains(x, y)){
-				selected = r.getToken();
 				myModel.notifyObs();
 				return r.getToken();
 			}
@@ -37,11 +37,20 @@ public class BoardPanel extends AbstractGamePanel {
 		return null;
 	}
 
+	public void setMessage(String m) {
+		this.message = m;
+	}
+
 	@Override
 	protected void drawAll(Graphics2D g) {
+		g.setColor(Color.WHITE);
+		g.drawString(message, 20, 20);
+
 		regions.clear();
 		super.drawGrid(g, myModel.getBoard());
-		
+
+		Token selected = control.getSuperSelected();
+
 		if(selected != null){
 			for(TokenRegion r : regions){
 				if(r.getToken() == null)continue;
@@ -109,13 +118,15 @@ public class BoardPanel extends AbstractGamePanel {
 	protected Controller getController() {
 		return control;
 	}
-	
+
 	@Override
 	public void addRegion(TokenRegion r) {
-		regions.add(r);
+		if(r.getToken() == null)return;
+		if(r.getToken().toString().matches("[a-xA-X]"))
+			regions.add(r);
 	}
 
 
-  
+
 
 }
