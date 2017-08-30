@@ -40,8 +40,12 @@ public class SuperController {
 		return selected;
 	}
 
-	public void attemptToSelect(Token t) {
+	public void attemptToSelect(TokenRegion r, String edge) {
+		Token t = r.getToken();
 		if(t == null)return;
+		if(t.equals(selected)){
+			if(edge != null)moveSelected(edge);
+		}
 		Character c = t.toString().charAt(0);
 		if(Character.isUpperCase(c)) {
 			if(myModel.getCurrent().toString().equals("1")) {
@@ -50,6 +54,13 @@ public class SuperController {
 		}
 		else if(myModel.getCurrent().toString().equals("2")) {
 			selected = t;
+		}
+	}
+	
+	public void interpretEdge(int e){
+		switch(e){
+		case(0):
+			
 		}
 	}
 
@@ -98,7 +109,9 @@ public class SuperController {
 		updateMessage();
 	}
 
-	public void selectDirection(String name, String direction){
+	public void moveSelected(String direction){
+		if(selected == null)return;
+		String name = selected.toString();
 		if(phase != 1){
 			System.out.println("Not the correct phase");
 			return;

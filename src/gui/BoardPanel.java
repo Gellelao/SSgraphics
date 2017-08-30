@@ -97,14 +97,17 @@ public class BoardPanel extends AbstractGamePanel {
 		}
 		if(grid[i][j] != null) {
 			super.drawToken((Graphics2D) g, x, y, tokenSize, grid[i][j]);
+			// Draw indicator to show piece has been changed this turn
 			if(myModel.getCurrent().pieceIsChanged(grid[i][j].toString())){
+				int size = tokenSize/3;
+				int extra = tokenSize/20;
 				g.setColor(Color.BLACK);
-				g.fillRect(x+1, y+1, 22, 22);
+				g.fillRect(x+extra/2, y+extra/2, size+extra, size+extra);
 				g.setColor(Color.WHITE);
-				g.fillRect(x+2, y+2, 20, 20);
+				g.fillRect(x+extra, y+extra, size, size);
 				g.setColor(Color.BLACK);
-				g.drawLine(x+2, y+2, x+22, y+22);
-				g.drawLine(x+22, y+2, x+2, y+22);
+				g.drawLine(x+extra, y+extra, x+size+extra, y+size+extra);
+				g.drawLine(x+size+extra, y+extra, x+extra, y+size+extra);
 			}
 		}
 	}

@@ -21,13 +21,11 @@ public class BoardPanelController implements Controller, KeyListener, MouseListe
 	public void keyPressed(KeyEvent e) {}
 	public void keyReleased(KeyEvent e) {}
 	public void keyTyped(KeyEvent e) {
-		Token selected = superC.getSelected();
-		if(selected == null)return;
 		switch (e.getKeyChar()) {
-		case 'w': superC.selectDirection(selected.toString(), "up"); return;    // TODO: Note the name is used here not the token - may cause issues
-		case 'a': superC.selectDirection(selected.toString(), "left"); return;
-		case 's': superC.selectDirection(selected.toString(), "down"); return;
-		case 'd': superC.selectDirection(selected.toString(), "right"); return;
+		case 'w': superC.moveSelected("up"); return;    // TODO: Note the name is used here not the token - may cause issues
+		case 'a': superC.moveSelected("left"); return;
+		case 's': superC.moveSelected("down"); return;
+		case 'd': superC.moveSelected("right"); return;
 		}
 	}
 
@@ -47,7 +45,8 @@ public class BoardPanelController implements Controller, KeyListener, MouseListe
 		//if(selected == null)
 		TokenRegion r = panel.getRegion(mouseX, mouseY);
 		if(r != null && r.getToken() != null) {
-			superC.attemptToSelect(r.getToken());
+			String edge = r.checkSubregions(mouseX, mouseY);
+			superC.attemptToSelect(r, edge);
 		}
 		//else panel.checkForEdgeClick(selected);
 		//panel.repaint();

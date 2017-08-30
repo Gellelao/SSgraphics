@@ -24,9 +24,21 @@ public class TokenRegion {
 		return false;
 	}
 	
+	public String checkSubregions(int clickX, int clickY){
+		int thickness = size/5;
+		if(clickX > x && clickX < x+size && clickY > y && clickY < y+thickness){return "up";} // Clicked North
+		if(clickX > x+size-thickness && clickX < x+size && clickY > y && clickY < y+size){return "right";} // Clicked East
+		if(clickX > x && clickX < x+size && clickY > y+size-thickness && clickY < y+size){return "down";} // Clicked South
+		if(clickX > x && clickX < x+thickness && clickY > y && clickY < y+size){return "left";} // Clicked West
+		return null;
+	}
+	
 	public Token getToken(){
 		return token;
 	}
+	
+	public int getX(){return x;}
+	public int getY(){return y;}
 	
 	public void show(Graphics2D g){
 		g.setColor(Color.WHITE);
