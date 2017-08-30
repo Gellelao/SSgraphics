@@ -1,5 +1,8 @@
 package src.gui;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+
 import src.model.Token;
 
 public class TokenRegion {
@@ -23,5 +26,10 @@ public class TokenRegion {
 	
 	public Token getToken(){
 		return token;
+	}
+	
+	public void show(Graphics2D g){
+		g.setColor(Color.WHITE);
+		g.drawRect(x, y, size, size);
 	}
 }

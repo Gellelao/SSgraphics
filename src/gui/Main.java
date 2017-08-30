@@ -6,6 +6,6 @@ import src.model.Board;
 
 public class Main {
   public static void main(String[] s) {
-    SwingUtilities.invokeLater(()->new BoardPanel(new Board()));
+    SwingUtilities.invokeLater(()->new View(new Board()));
   }
 }

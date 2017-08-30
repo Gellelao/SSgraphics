@@ -11,28 +11,24 @@ import src.model.Token;
 public class BoardPanelController implements Controller, KeyListener, MouseListener {
 	private Board myModel;
 	// Maybe move this commandHistroy to the board and manage it there
-	private Stack<String> commandHistory;
 	private BoardPanel panel;
 	Token selected = null;
 	private SuperController superC;
 
 	public BoardPanelController(Board board, BoardPanel panel) {
 		myModel = board;
-		commandHistory = new Stack<String>();
 		this.panel = panel;
 	}
 
-	public void keyPressed(KeyEvent e) {
-		System.out.println("KEYPressed");}
+	public void keyPressed(KeyEvent e) {}
 	public void keyReleased(KeyEvent e) {}
 	public void keyTyped(KeyEvent e) {
-		System.out.println("KEYTYPED");
 		if(selected == null)return;
 		switch (e.getKeyChar()) {
-		case 'w': System.out.println("W"); return;//myModel.moveToken(selected.toString(), "up");  // TODO: Note the name is used here not the token - may cause issues
-		case 'a': myModel.moveToken(selected.toString(), "left"); return;
-		case 's': myModel.moveToken(selected.toString(), "down"); return;
-		case 'd': myModel.moveToken(selected.toString(), "right"); return;
+		case 'w': superC.selectDirection(selected.toString(), "up"); return;    // TODO: Note the name is used here not the token - may cause issues
+		case 'a': superC.selectDirection(selected.toString(), "left"); return;
+		case 's': superC.selectDirection(selected.toString(), "down"); return;
+		case 'd': superC.selectDirection(selected.toString(), "right"); return;
 		}
 	}
 	
@@ -45,9 +41,10 @@ public class BoardPanelController implements Controller, KeyListener, MouseListe
 	public void mouseClicked(MouseEvent e) {
 		int mouseX = e.getX();
 		int mouseY = e.getY();
+		System.out.println(selected);
 		if(selected == null)selected = panel.getToken(mouseX, mouseY);
 		//else panel.checkForEdgeClick(selected);
-		panel.repaint();
+		//panel.repaint();
 	}
 	
 	@Override
@@ -94,32 +91,7 @@ public class BoardPanelController implements Controller, KeyListener, MouseListe
 		board.rotateToken(letter, angle);
 	}*/
 
-	/**
-	 * Calls the board undo method, and reverts the players lists to be accurate to the previous board state
-	 *
-	 * @return return the string describing the last action taken, so that the parser knows what to do next
-	 */
-	public String undo(){
-		if(!myModel.undo()) {
-			System.out.println("There is nothing to undo");
-			return "continue";
-		}
-		else{
-			String lastCommand = commandHistory.pop();
-			switch(lastCommand){
-			case "create":
-				myModel.getCurrent().undoCreate();
-				break;
-			case "move":
-				myModel.getCurrent().undoChanges();
-				break;
-			case "rotate":
-				myModel.getCurrent().undoChanges();
-				break;
-			}
-			return lastCommand;
-		}
-	}
+
 
 	@Override
 	public void setSuper(SuperController s) {

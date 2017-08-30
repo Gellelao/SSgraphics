@@ -19,6 +19,7 @@ public class Board extends Observable{
 	private Stack<Token[][]> history;
 	private Stack<ArrayList<String>> cmHistory;
 	private ArrayList<String> cemetery;
+	private Stack<String> commandHistory;
 
 	PlayerToken one;
 	PlayerToken two;
@@ -30,6 +31,7 @@ public class Board extends Observable{
 		pieceNames = new HashMap<String, PieceToken>();
 		cmHistory = new Stack<ArrayList<String>>();
 		cemetery = new ArrayList<String>();
+		commandHistory = new Stack<String>();
 
 		one = new PlayerToken("1");
 		two = new PlayerToken("2");
@@ -68,6 +70,16 @@ public class Board extends Observable{
 			current = two;
 		}
 		else current = one;
+		one.clearChangedPieces();
+		two.clearChangedPieces();
+	}
+	
+	public String popCommandHistory(){
+		return commandHistory.pop();
+	}
+	
+	public void pushCommandHistory(String s){
+		commandHistory.push(s);
 	}
 
 	/**
@@ -129,9 +141,15 @@ public class Board extends Observable{
 	 * @param t token
 	 */
 	public void spawnToken(Token t) {
-		board[current.getSpawnX()][current.getSpawnY()] = t;
-	    setChanged();
-	    notifyObservers();
+		if(board[current.getSpawnX()][current.getSpawnY()] == null){
+			board[current.getSpawnX()][current.getSpawnY()] = t;
+
+			current.removeFromAvailable(t.toString());
+			current.addToPlayed(t.toString());
+			
+	    	setChanged();
+	    	notifyObservers();
+		}
 	}
 	
 	/**
@@ -182,58 +200,58 @@ public class Board extends Observable{
 	public void moveToken(String name, String dir) {
 		int row = getTokenRow(name);
 		int col = getTokenCol(name);
-		System.out.println("moving "+ dir);
+		//System.out.println("moving "+ dir);
 
 		switch(dir){
 		case("up"):
-			if(row-1 < 0){
-				cemetery.add(board[row][col].toString());
-				board[row][col] = null;
-			}
-			else{
-				if(board[row-1][col] != null){
-					moveToken(board[row-1][col].toString(), "up");
-				}
-				board[row-1][col] = board[row][col];
-				board[row][col] = null;
-			}
-			break;
-		case("down"):
-			if(row+1 > board.length){
-				cemetery.add(board[row][col].toString());
-				board[row][col] = null;
-			}
-			else{
-				if(board[row+1][col] != null){
-					moveToken(board[row+1][col].toString(), "down");
-				}
-				board[row+1][col] = board[row][col];
-				board[row][col] = null;
-			}
-			break;
-		case("left"):
 			if(col-1 < 0){
 				cemetery.add(board[row][col].toString());
 				board[row][col] = null;
 			}
 			else{
 				if(board[row][col-1] != null){
-					moveToken(board[row][col-1].toString(), "left");
+					moveToken(board[row][col-1].toString(), "up");
 				}
 				board[row][col-1] = board[row][col];
 				board[row][col] = null;
 			}
 			break;
-		case("right"):
+		case("down"):
 			if(col+1 > board[0].length){
 				cemetery.add(board[row][col].toString());
 				board[row][col] = null;
 			}
 			else{
 				if(board[row][col+1] != null){
-					moveToken(board[row][col+1].toString(), "right");
+					moveToken(board[row][col+1].toString(), "down");
 				}
 				board[row][col+1] = board[row][col];
+				board[row][col] = null;
+			}
+			break;
+		case("left"):
+			if(row-1 < 0){
+				cemetery.add(board[row][col].toString());
+				board[row][col] = null;
+			}
+			else{
+				if(board[row-1][col] != null){
+					moveToken(board[row-1][col].toString(), "left");
+				}
+				board[row-1][col] = board[row][col];
+				board[row][col] = null;
+			}
+			break;
+		case("right"):
+			if(row+1 > board.length){
+				cemetery.add(board[row][col].toString());
+				board[row][col] = null;
+			}
+			else{
+				if(board[row+1][col] != null){
+					moveToken(board[row+1][col].toString(), "right");
+				}
+				board[row+1][col] = board[row][col];
 				board[row][col] = null;
 			}
 			break;
@@ -241,14 +259,22 @@ public class Board extends Observable{
 		// Remove any tokens in the eight forbidden corner tiles
 		for(int i = 0; i < 2; i++) {
 			for(int j = 0; j < 2; j++) {
-				if(board[i][j] != null && !board[i][j].toString().equals("1"))board[i][j] = null;
+				if(board[i][j] != null && !board[i][j].toString().equals("1")){
+					cemetery.add(board[row][col].toString());// Remove this line for a different set of bugs
+					board[i][j] = null;
+				}
 			}
 		}
 		for(int i = 8; i < 10; i++) {
 			for(int j = 8; j < 10; j++) {
-				if(board[i][j] != null && !board[i][j].toString().equals("2"))board[i][j] = null;
+				if(board[i][j] != null && !board[i][j].toString().equals("2")){
+					cemetery.add(board[row][col].toString());// Remove this line for a different set of bugs
+					board[i][j] = null;
+				}
 			}
 		}
+	    setChanged();
+	    notifyObservers();
 	}
 
 	public void printCemetery(){

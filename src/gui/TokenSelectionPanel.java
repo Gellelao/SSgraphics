@@ -58,6 +58,7 @@ public class TokenSelectionPanel extends AbstractGamePanel{
 	
 	@Override
 	protected void drawAll(Graphics2D g) {
+		regions.clear();
 		super.drawGrid(g, myModel.getRotations(toDraw));
 	}
 

@@ -30,10 +30,8 @@ public class TokenSelectionPanelController implements Controller, KeyListener, M
 		int mouseY = e.getY();
 		Token t = panel.getToken(mouseX, mouseY);
 		if(t != null){
-			if(superC == null)System.out.println("shit");
 			superC.selectRotation(t);
-			myModel.spawnToken(t);
-			System.out.println(t);
+			//myModel.spawnToken(t);
 		}
 		superC.setSidesToDefault();
 	}
