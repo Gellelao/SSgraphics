@@ -30,7 +30,7 @@ public class BoardPanelController implements Controller, KeyListener, MouseListe
 		case 'd': superC.selectDirection(selected.toString(), "right"); return;
 		}
 	}
-	
+
 	public Token getSuperSelected() {
 		return superC.getSelected();
 	}
@@ -45,7 +45,10 @@ public class BoardPanelController implements Controller, KeyListener, MouseListe
 		int mouseX = e.getX();
 		int mouseY = e.getY();
 		//if(selected == null)
-		superC.attemptToSelect(panel.getToken(mouseX, mouseY));
+		TokenRegion r = panel.getRegion(mouseX, mouseY);
+		if(r != null && r.getToken() != null) {
+			superC.attemptToSelect(r.getToken());
+		}
 		//else panel.checkForEdgeClick(selected);
 		//panel.repaint();
 	}

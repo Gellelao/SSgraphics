@@ -27,11 +27,11 @@ public class BoardPanel extends AbstractGamePanel {
 		this.setFocusable(true);
 	}
 
-	public Token getToken(int x, int y){
+	public TokenRegion getRegion(int x, int y){
 		for(TokenRegion r : regions){
 			if(r.contains(x, y)){
 				myModel.notifyObs();
-				return r.getToken();
+				return r;
 			}
 		}
 		return null;

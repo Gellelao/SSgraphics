@@ -63,6 +63,7 @@ public class SuperController {
 			return;
 		}
 		if(p.toString().equals(myModel.getCurrent().toString())){
+			selected = null;
 			view.setSelectionPanelToken(t, p.toString());
 			view.switchPlayerCard("Card with the four rotations of a token", p.toString());
 		}
