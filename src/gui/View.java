@@ -93,7 +93,7 @@ public class View extends JFrame implements Observer{
 		JButton undo = new JButton("Undo");
 			undo.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-				supControl.undo();
+					supControl.undo();
 			}});
 			undo.setFocusable(false);
 		JButton pass = new JButton("Pass");

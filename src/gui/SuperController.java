@@ -56,13 +56,6 @@ public class SuperController {
 			selected = t;
 		}
 	}
-	
-	public void interpretEdge(int e){
-		switch(e){
-		case(0):
-			
-		}
-	}
 
 	public void tokenSelect(Token t, PlayerToken p){
 		if(phase != 0){
@@ -99,6 +92,7 @@ public class SuperController {
 
 		BoardPanel b = (BoardPanel)boardControl.getPanel();
 		b.setMessage(playerName + "'s turn, " + phaseName + " phase.");
+		myModel.notifyObs();
 	}
 
 	public void selectRotation(Token t){
@@ -120,8 +114,11 @@ public class SuperController {
 			System.out.println("You have already changed that piece");
 			return;
 		}
+		myModel.saveState();
+		myModel.pushCommandHistory("move");
 		myModel.moveToken(name, direction);
 		myModel.getCurrent().changePiece(name);
+		updateMessage();
 	}
 
 	public void pass(){
@@ -145,25 +142,30 @@ public class SuperController {
 	 *
 	 * @return return the string describing the last action taken, so that the parser knows what to do next
 	 */
-	public String undo(){
-		if(!myModel.undo()) {
-			System.out.println("There is nothing to undo");
-			return "continue";
+	public void undo(){
+		if(phase == 0){
+			phase = 1;
+			myModel.switchCurrent();
+			updateMessage();
+			return;
 		}
-		else{
-			String lastCommand = myModel.popCommandHistory();
-			switch(lastCommand){
-			case "create":
-				myModel.getCurrent().undoCreate();
-				break;
-			case "move":
-				myModel.getCurrent().undoChanges();
-				break;
-			case "rotate":
-				myModel.getCurrent().undoChanges();
-				break;
-			}
-			return lastCommand;
+		
+		myModel.undo();
+
+		String lastCommand = myModel.popCommandHistory();
+		if(lastCommand == null)return;
+		switch(lastCommand){
+		case "create":
+			myModel.getCurrent().undoCreate();
+			phase = 0;
+			break;
+		case "move":
+			myModel.getCurrent().undoChanges();
+			break;
+		case "rotate":
+			myModel.getCurrent().undoChanges();
+			break;
 		}
+		updateMessage();
 	}
 }

@@ -75,6 +75,7 @@ public class Board extends Observable{
 	}
 
 	public String popCommandHistory(){
+		if(commandHistory.isEmpty())return null;
 		return commandHistory.pop();
 	}
 
@@ -225,7 +226,7 @@ public class Board extends Observable{
 			}
 			break;
 		case("down"):
-			if(col+1 > board[0].length){
+			if(col+1 >= board[0].length){
 				cemetery.add(board[row][col].toString());
 				board[row][col] = null;
 			}
@@ -251,7 +252,7 @@ public class Board extends Observable{
 			}
 			break;
 		case("right"):
-			if(row+1 > board.length){
+			if(row+1 >= board.length){
 				cemetery.add(board[row][col].toString());
 				board[row][col] = null;
 			}
@@ -319,20 +320,23 @@ public class Board extends Observable{
 	 *
 	 * @return returns true if success, false if history is empty
 	 */
-	public boolean undo() {
-		if(!cmHistory.isEmpty()){
-			cemetery = cmHistory.pop();
-		}
-		if(!history.isEmpty()) {
-			Token[][] latestSave = history.pop();
-			for(int i = 0; i < latestSave.length; i++) {
-				for(int j = 0; j < latestSave[0].length; j++) {
-					board[i][j] = latestSave[i][j];
-				}
+	public void undo() {
+		if(cmHistory.isEmpty())return;
+		if(history.isEmpty())return;
+		
+		cemetery = cmHistory.pop();
+		
+		Token[][] latestSave = history.pop();
+		for(int i = 0; i < latestSave.length; i++) {
+			for(int j = 0; j < latestSave[0].length; j++) {
+				
+				/*if(latestSave[i][j] == null)board[i][j] = null;
+				else board[i][j] = latestSave[i][j].copy();*/
+				
+				board[i][j] = latestSave[i][j];
 			}
-			return true;
 		}
-		return false;
+		notifyObs();
 	}
 
 	public Token getToken(int x, int y){
