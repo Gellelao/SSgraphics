@@ -116,7 +116,7 @@ public class View extends JFrame implements Observer{
 					JOptionPane.showMessageDialog(null, playerName + " Player Wins!");
 
 					StatTracker s = supControl.getStats();
-					JOptionPane.showMessageDialog(null, "Stats: \n"
+					JOptionPane.showMessageDialog(null, "Stats: \n\n"
 							+ "Moves:  " + s.getMoves() + "\n"
 							+ "Undos:  " + s.getUndos() + "\n"
 							+ "Time:   " + s.getTime() + " seconds\n"
@@ -173,6 +173,9 @@ public class View extends JFrame implements Observer{
 		// Add the two panels to the cards panel
 		cards.add(menuPanel, MENUPANEL);
 		cards.add(game, GAMEPANEL);
+		cards.setBounds(0, 0, screenWidth, screenHeight);
+		
+		JLayerPanel anims = new JLayered 
 
 		this.add(cards);
 		this.setVisible(true);

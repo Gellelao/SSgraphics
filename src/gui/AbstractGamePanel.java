@@ -20,6 +20,13 @@ public abstract class AbstractGamePanel extends JPanel{
 
 	Token[][] grid;
 
+	/**
+	 * Draws a 2D grid of any dimensions, with black borders
+	 * Scales to the panel size
+	 * 
+	 * @param g - graphics object
+	 * @param gridParam - The grid to draw
+	 */
 	public void drawGrid(Graphics2D g, Token[][] gridParam) {
 		this.grid = gridParam;
 
@@ -42,22 +49,53 @@ public abstract class AbstractGamePanel extends JPanel{
 				int x = realX+borderWeight+(i*(tokenSize+borderWeight));
 				int y = realY+borderWeight+(j*(tokenSize+borderWeight));
 
+				// Add "tokenRegions" to make click detection easier
 				addRegion(new TokenRegion(grid[i][j], x, y, tokenSize));
+				// Rules differ between panels - the board is the biggest difference as it has to draw
+				// Different coloured tiles
 				applyRules(g, i, j, x, y);
 			}
 		}
 	}
 
+	/**
+	 * Draws a token, detects which colour(yellow/green),
+	 * and draws the red "swords" and "shields"
+	 * 
+	 * @param g - Graphics object
+	 * @param x - x ordinate of top left of the token
+	 * @param y - y ordinate of top left of the token
+	 * @param size - width/heigh of the token (They will always be squares)
+	 * @param p - the Token to draw
+	 */
 	protected void drawToken(Graphics2D g, int x, int y, int size, Token p){
 		String[] tokenInfo = p.getImage();
+		
+		// TokenInfo[0] contains the name of the token - players have numbers for names, pieces have letters
 		if(tokenInfo[0].equals("1")) {
 			g.setColor(Color.YELLOW.brighter());
 			g.fillRect(x, y, size, size);
+			
+			// Draw the face
+			int third = size/3;
+			int eyeSize = size/8;
+			g.setColor(Color.BLACK);
+			g.fillOval(x+third-(eyeSize/2), y+third, eyeSize, eyeSize);
+			g.fillOval(x+third+third-(eyeSize/2), y+third, eyeSize, eyeSize);
+			g.fillArc(x+third+eyeSize/4, y+third+third, third, third/2, 45, 90);
 			return;
 		}
 		else if(tokenInfo[0].equals("2")) {
 			g.setColor(Color.GREEN.brighter());
 			g.fillRect(x, y, size, size);
+			
+			// Draw the face
+			int third = size/3;
+			int eyeSize = size/8;
+			g.setColor(Color.BLACK);
+			g.fillOval(x+third-(eyeSize/2), y+third, eyeSize, eyeSize);
+			g.fillOval(x+third+third-(eyeSize/2), y+third, eyeSize, eyeSize);
+			g.fillArc(x+third+eyeSize/4, y+third+third, third, third/2, 45, 90);
 			return;
 		}
 		else if(tokenInfo[0].toUpperCase().equals(tokenInfo[0])) {
