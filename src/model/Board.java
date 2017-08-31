@@ -83,6 +83,8 @@ public class Board extends Observable{
 		commandHistory.push(s);
 	}
 
+	public int cemeterySize() {return cemetery.size();}
+
 	/**
 	 * Converts a list of strings into an array of string with the given height and width
 	 *
@@ -323,16 +325,16 @@ public class Board extends Observable{
 	public void undo() {
 		if(cmHistory.isEmpty())return;
 		if(history.isEmpty())return;
-		
+
 		cemetery = cmHistory.pop();
-		
+
 		Token[][] latestSave = history.pop();
 		for(int i = 0; i < latestSave.length; i++) {
 			for(int j = 0; j < latestSave[0].length; j++) {
-				
+
 				/*if(latestSave[i][j] == null)board[i][j] = null;
 				else board[i][j] = latestSave[i][j].copy();*/
-				
+
 				board[i][j] = latestSave[i][j];
 			}
 		}

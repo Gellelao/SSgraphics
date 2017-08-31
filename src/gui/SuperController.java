@@ -1,5 +1,9 @@
 package src.gui;
 
+import java.awt.Color;
+
+import javax.swing.JOptionPane;
+
 import src.model.Board;
 import src.model.PlayerToken;
 import src.model.Token;
@@ -15,10 +19,15 @@ public class SuperController {
 	BoardPanel b;
 	int phase; // 0 = create, 1 = move
 	Token selected = null;
+	
+	SoundSystem beeper;
+	StatTracker stats;
 
 	public SuperController(Board model, View v, Controller boardControl, Controller p1Control, Controller p2Control, Controller s1Control, Controller s2Control) {
 		this.view = v;
 		myModel = model;
+		beeper = new SoundSystem();
+		stats = new StatTracker(myModel);
 
 		phase = 0;
 
@@ -64,6 +73,13 @@ public class SuperController {
 		}
 		if(myModel.currentSpawnOccupied()) {
 			System.out.println("Your spawn tile is occupied");
+			beeper.increaseError();
+			if(beeper.getError() == 2) {
+				view.setPassToShiny(true);
+			}
+			if(beeper.getError() > 2) {
+				JOptionPane.showMessageDialog(null, "There is a Piece occupying your spawn location\nYou must click the 'pass' button");
+			}
 			return;
 		}
 		if(p.toString().equals(myModel.getCurrent().toString())){
@@ -118,10 +134,13 @@ public class SuperController {
 		myModel.pushCommandHistory("move");
 		myModel.moveToken(name, direction);
 		myModel.getCurrent().changePiece(name);
+		stats.move(1);
 		updateMessage();
 	}
 
 	public void pass(){
+		view.setPassToShiny(false);
+		beeper.resetError();
 		System.out.println("pass");
 		phase++;
 		if(phase > 1){
@@ -136,6 +155,8 @@ public class SuperController {
 		view.switchPlayerCard("Card with all of a player's tokens", "1");
 		view.switchPlayerCard("Card with all of a player's tokens", "2");
 	}
+	
+	public StatTracker getStats() {return stats;}
 
 	/**
 	 * Calls the board undo method, and reverts the players lists to be accurate to the previous board state
@@ -143,6 +164,8 @@ public class SuperController {
 	 * @return return the string describing the last action taken, so that the parser knows what to do next
 	 */
 	public void undo(){
+		stats.undo();
+		
 		if(phase == 0){
 			phase = 1;
 			myModel.switchCurrent();
@@ -160,6 +183,7 @@ public class SuperController {
 			phase = 0;
 			break;
 		case "move":
+			stats.move(-1);
 			myModel.getCurrent().undoChanges();
 			break;
 		case "rotate":

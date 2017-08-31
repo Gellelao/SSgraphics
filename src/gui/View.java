@@ -2,6 +2,7 @@ package src.gui;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,6 +40,7 @@ public class View extends JFrame implements Observer{
 	private SuperController supControl;
 	private TokenSelectionPanel selectionPanel1;
 	private TokenSelectionPanel selectionPanel2;
+	private JButton pass;
 
 	String message = "Welcome";
 
@@ -96,7 +98,7 @@ public class View extends JFrame implements Observer{
 					supControl.undo();
 			}});
 			undo.setFocusable(false);
-		JButton pass = new JButton("Pass");
+		pass = new JButton("Pass");
 			pass.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					supControl.pass();
@@ -112,6 +114,13 @@ public class View extends JFrame implements Observer{
 					else playerName = "Yellow";
 
 					JOptionPane.showMessageDialog(null, playerName + " Player Wins!");
+
+					StatTracker s = supControl.getStats();
+					JOptionPane.showMessageDialog(null, "Stats: \n"
+							+ "Moves:  " + s.getMoves() + "\n"
+							+ "Undos:  " + s.getUndos() + "\n"
+							+ "Time:   " + s.getTime() + " seconds\n"
+							+ "Deaths: " + s.getDeaths() + "\n");
 					switchToCard(cards, MENUPANEL);
 			}});
 			surrender.setFocusable(false);
@@ -183,6 +192,17 @@ public class View extends JFrame implements Observer{
 		else {
 			CardLayout layout = (CardLayout) p2.getLayout();
 			layout.show(p2, s);
+		}
+	}
+	
+	public void setPassToShiny(boolean on) {
+		if(on) {
+			pass.setForeground(new Color(165, 163, 38));
+			pass.setBackground(Color.YELLOW);
+		}
+		else {
+			pass.setForeground(Color.BLACK);
+			pass.setBackground(new JButton().getBackground());
 		}
 	}
 
