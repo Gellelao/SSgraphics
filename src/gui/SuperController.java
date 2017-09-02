@@ -22,6 +22,7 @@ public class SuperController {
 	
 	SoundSystem beeper;
 	StatTracker stats;
+	AnimationPane animations;
 
 	public SuperController(Board model, View v, Controller boardControl, Controller p1Control, Controller p2Control, Controller s1Control, Controller s2Control) {
 		this.view = v;
@@ -49,12 +50,25 @@ public class SuperController {
 		return selected;
 	}
 
-	public void attemptToSelect(TokenRegion r, String edge) {
+	/**
+	 * Called by the boardPanel's controller when the player clicks on a token
+	 * Takes a TokenRegion parameter because, like the "selectRotation()" method below, this is method
+	 * is responsible for some animations, and needs the information from a TokenRegion.
+	 * This method also interprets the action of the player clicking the edge of a token to move it.
+	 * This is done using the edge parameter, calculated before being passed in here.
+	 * 
+	 * @param r - The TokenRegion 'underneath' the mouse click
+	 * @param edge - the edge of the token that has been clicked (0=N, 1=E, 2=S, 3=W), or NULL is no edge has been clicked
+	 */
+	public void boardSelect(TokenRegion r, String edge) {
 		Token t = r.getToken();
 		if(t == null)return;
 		if(t.equals(selected)){
 			if(edge != null)moveSelected(edge);
 		}
+		
+		animations.setCurrent(r);
+		
 		Character c = t.toString().charAt(0);
 		if(Character.isUpperCase(c)) {
 			if(myModel.getCurrent().toString().equals("1")) {
@@ -66,7 +80,14 @@ public class SuperController {
 		}
 	}
 
-	public void tokenSelect(Token t, PlayerToken p){
+	/**
+	 * Called by the playerPanel controller - ensures that the player is following the rules before switching
+	 * to the tokenSelectionPanel behind, to allow the player to select a rotation
+	 * 
+	 * @param t - the token that has been clicked
+	 * @param p - the player owning the token
+	 */
+	public void playerSelect(Token t, PlayerToken p){
 		if(phase != 0){
 			System.out.println("Not the correct phase");
 			return;
@@ -82,20 +103,44 @@ public class SuperController {
 			}
 			return;
 		}
+		// If the player who owns the clicked token is the player taking their turn, continue.
 		if(p.toString().equals(myModel.getCurrent().toString())){
 			selected = null;
 			view.setSelectionPanelToken(t, p.toString());
 			view.switchPlayerCard("Card with the four rotations of a token", p.toString());
 		}
 		else System.out.println("You can only click your pieces");
-/*		if(p.getImage()[0].equals("1")){
-			view.setSelectionPanelToken1(t);
-			view.switchP1Card("Card with the four rotations of a token");
+	}
+	
+	/**
+	 * Called by the TokenSelectionPanel controller - it first animates the token that has been clicked
+	 * - this is why it takes a TokenRegion instead of a Token - it needs the information about the location
+	 * for where to animate from.
+	 * Then it spawn the token for the current player, using the model (Board), and moves this SuperController to the next phase
+	 * 
+	 * @param r - The regions that the mouse has been clicked in - carries information about the origin of the token clicked, and
+	 * stores the token itself.
+	 */
+	public void selectRotation(TokenRegion r){
+		myModel.saveState();
+		myModel.pushCommandHistory("create");
+		
+		animations.setCurrent(r);
+		
+		int x = myModel.getCurrent().getSpawnX();
+		int y = myModel.getCurrent().getSpawnY();
+		x += p1Control.getPanel().getWidth();
+		animations.setTarget(x, y);
+		animations.startDrawing();
+		while(animations.currentlyDrawing()){
+			animations.updateDrawing();
+			animations.paintImmediately(0, 0, animations.getWidth(), animations.getHeight());
 		}
-		else {
-			view.setSelectionPanelToken2(t);
-			view.switchP2Card("Card with the four rotations of a token");
-		}*/
+		
+		myModel.spawnToken(r.getToken());
+		
+		phase++;
+		updateMessage();
 	}
 
 	public void updateMessage() {
@@ -109,14 +154,6 @@ public class SuperController {
 		BoardPanel b = (BoardPanel)boardControl.getPanel();
 		b.setMessage(playerName + "'s turn, " + phaseName + " phase.");
 		myModel.notifyObs();
-	}
-
-	public void selectRotation(Token t){
-		myModel.saveState();
-		myModel.pushCommandHistory("create");
-		myModel.spawnToken(t);
-		phase++;
-		updateMessage();
 	}
 
 	public void moveSelected(String direction){
@@ -149,6 +186,10 @@ public class SuperController {
 		}
 		updateMessage();
 		myModel.notifyObs();
+	}
+	
+	public void setAnimations(AnimationPane anim){
+		this.animations = anim;
 	}
 
 	public void setSidesToDefault(){

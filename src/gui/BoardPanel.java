@@ -43,6 +43,9 @@ public class BoardPanel extends AbstractGamePanel {
 
 	@Override
 	protected void drawAll(Graphics2D g) {
+		g.setColor(getBGColour());
+		g.fillRect(0, 0, getWidth(), getHeight());
+		
 		g.setColor(Color.WHITE);
 		g.drawString(message, 20, 20);
 
@@ -71,6 +74,21 @@ public class BoardPanel extends AbstractGamePanel {
 		else g.setColor(getTileColour().darker());
 		g.fillRect(x, y, tokenSize, tokenSize);
 
+		if((i == 1 && j == 1)||(i == 8 && j == 8)){
+			if(i == 1) g.setColor(Color.YELLOW.brighter());
+			else g.setColor(Color.GREEN.brighter());
+			
+			g.fillRect(x, y, tokenSize, tokenSize);
+			
+			// Draw the face
+			int third = tokenSize/3;
+			int eyeSize = tokenSize/8;
+			g.setColor(Color.BLACK);
+			g.fillOval(x+third-(eyeSize/2), y+third, eyeSize, eyeSize);
+			g.fillOval(x+third+third-(eyeSize/2), y+third, eyeSize, eyeSize);
+			g.fillArc(x+third+eyeSize/4, y+third+third, third, third/2, 45, 90);
+			return;
+		}
 		if(i == 2 && j == 2 && grid[i][j] == null) {
 			g.setColor(Color.YELLOW.darker());
 			g.fillRect(x, y, tokenSize, tokenSize);

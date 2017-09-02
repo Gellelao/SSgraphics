@@ -35,8 +35,8 @@ public class Board extends Observable{
 
 		one = new PlayerToken("1");
 		two = new PlayerToken("2");
-		addToken(one, 1, 1);
-		addToken(two, 8, 8);
+		//addToken(one, 1, 1);
+		//addToken(two, 8, 8);
 
 		current = one;
 

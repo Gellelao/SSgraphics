@@ -46,7 +46,7 @@ public class BoardPanelController implements Controller, KeyListener, MouseListe
 		TokenRegion r = panel.getRegion(mouseX, mouseY);
 		if(r != null && r.getToken() != null) {
 			String edge = r.checkSubregions(mouseX, mouseY);
-			superC.attemptToSelect(r, edge);
+			superC.boardSelect(r, edge);
 		}
 		//else panel.checkForEdgeClick(selected);
 		//panel.repaint();

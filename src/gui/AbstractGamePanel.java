@@ -71,34 +71,7 @@ public abstract class AbstractGamePanel extends JPanel{
 	protected void drawToken(Graphics2D g, int x, int y, int size, Token p){
 		String[] tokenInfo = p.getImage();
 		
-		// TokenInfo[0] contains the name of the token - players have numbers for names, pieces have letters
-		if(tokenInfo[0].equals("1")) {
-			g.setColor(Color.YELLOW.brighter());
-			g.fillRect(x, y, size, size);
-			
-			// Draw the face
-			int third = size/3;
-			int eyeSize = size/8;
-			g.setColor(Color.BLACK);
-			g.fillOval(x+third-(eyeSize/2), y+third, eyeSize, eyeSize);
-			g.fillOval(x+third+third-(eyeSize/2), y+third, eyeSize, eyeSize);
-			g.fillArc(x+third+eyeSize/4, y+third+third, third, third/2, 45, 90);
-			return;
-		}
-		else if(tokenInfo[0].equals("2")) {
-			g.setColor(Color.GREEN.brighter());
-			g.fillRect(x, y, size, size);
-			
-			// Draw the face
-			int third = size/3;
-			int eyeSize = size/8;
-			g.setColor(Color.BLACK);
-			g.fillOval(x+third-(eyeSize/2), y+third, eyeSize, eyeSize);
-			g.fillOval(x+third+third-(eyeSize/2), y+third, eyeSize, eyeSize);
-			g.fillArc(x+third+eyeSize/4, y+third+third, third, third/2, 45, 90);
-			return;
-		}
-		else if(tokenInfo[0].toUpperCase().equals(tokenInfo[0])) {
+		if(tokenInfo[0].toUpperCase().equals(tokenInfo[0])) {
 			g.setColor(Color.YELLOW);
 		}
 		else g.setColor(Color.GREEN);
@@ -165,8 +138,6 @@ public abstract class AbstractGamePanel extends JPanel{
 	public void paintComponent(Graphics _g) {
 		super.paintComponent(_g);
 		Graphics2D g = (Graphics2D) _g;
-		g.setColor(getBGColour());
-		g.fillRect(0, 0, getWidth(), getHeight());
 		drawAll(g);
 	}
 }

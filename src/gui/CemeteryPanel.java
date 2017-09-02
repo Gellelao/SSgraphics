@@ -24,6 +24,8 @@ public class CemeteryPanel extends AbstractGamePanel{
 
 	@Override
 	protected void drawAll(Graphics2D g) {
+		g.setColor(getBGColour());
+		g.fillRect(0, 0, getWidth(), getHeight());
 		super.drawGrid(g, myModel.getCemetery());
 	}
 

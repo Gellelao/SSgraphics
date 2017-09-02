@@ -24,7 +24,7 @@ public class PlayerPanelController implements Controller, KeyListener, MouseList
 		int mouseY = e.getY();
 		Token t = panel.getToken(mouseX, mouseY);
 		if(t != null){
-			superC.tokenSelect(t, panel.getPlayer());
+			superC.playerSelect(t, panel.getPlayer());
 		}
 	}
 

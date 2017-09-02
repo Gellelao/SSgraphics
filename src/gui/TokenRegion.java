@@ -39,6 +39,7 @@ public class TokenRegion {
 	
 	public int getX(){return x;}
 	public int getY(){return y;}
+	public int getSize(){return size;}
 	
 	public void show(Graphics2D g){
 		g.setColor(Color.WHITE);

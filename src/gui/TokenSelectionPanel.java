@@ -17,10 +17,6 @@ public class TokenSelectionPanel extends AbstractGamePanel{
 	private Board myModel;
 	
 	private Token toDraw;
-	private int x;
-	private int y;
-	private int size;
-	private int numberOfTurns;
 	
 	private ArrayList<TokenRegion> regions;
 
@@ -46,11 +42,10 @@ public class TokenSelectionPanel extends AbstractGamePanel{
 		toDraw = t;
 	}
 	
-	public Token getToken(int x, int y){
-		for(int i = 0; i < 4; i++){
-			if(regions.get(i).contains(x, y)){
-				numberOfTurns = i;
-				return regions.get(i).getToken();
+	public TokenRegion getRegion(int x, int y){
+		for(TokenRegion r : regions){
+			if(r.contains(x, y)){
+				return r;
 			}
 		}
 		return null;
@@ -59,6 +54,10 @@ public class TokenSelectionPanel extends AbstractGamePanel{
 	@Override
 	protected void drawAll(Graphics2D g) {
 		regions.clear();
+
+		g.setColor(getBGColour());
+		g.fillRect(0, 0, getWidth(), getHeight());
+		
 		super.drawGrid(g, myModel.getRotations(toDraw));
 	}
 

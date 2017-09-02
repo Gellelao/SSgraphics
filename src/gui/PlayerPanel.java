@@ -55,6 +55,10 @@ public class PlayerPanel extends AbstractGamePanel{
 	@Override
 	protected void drawAll(Graphics2D g) {
 		regions.clear();
+		
+		g.setColor(getBGColour());
+		g.fillRect(0, 0, getWidth(), getHeight());
+		
 		super.drawGrid(g, myModel.getAvailable(player));
 	}
 

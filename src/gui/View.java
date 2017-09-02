@@ -14,12 +14,14 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.WindowConstants;
 
 import src.model.Board;
+import src.model.PieceToken;
 import src.model.Token;
 
 public class View extends JFrame implements Observer{
@@ -175,9 +177,20 @@ public class View extends JFrame implements Observer{
 		cards.add(game, GAMEPANEL);
 		cards.setBounds(0, 0, screenWidth, screenHeight);
 		
-		JLayerPanel anims = new JLayered 
+		JLayeredPane layers = new JLayeredPane();
+		layers.setBounds(0, 0, screenWidth, screenHeight);
+		
+		AnimationPane animationLayer = new AnimationPane();
+		supControl.setAnimations(animationLayer);
 
-		this.add(cards);
+		layers.add(cards, 1);
+		layers.add(animationLayer, 0);
+
+		animationLayer.setOpaque(false);
+		animationLayer.setBounds(0, 0, screenWidth, screenHeight);
+		animationLayer.validate();
+		
+		this.add(layers);
 		this.setVisible(true);
 	}
 
@@ -233,5 +246,5 @@ public class View extends JFrame implements Observer{
 	}*/
 
 	public Dimension getPreferredSize() {return new Dimension(screenWidth, screenHeight);}   //0, 0);}
-	 public void update(Observable arg0, Object arg1) {repaint();}
+	public void update(Observable arg0, Object arg1) {repaint();}
 }
