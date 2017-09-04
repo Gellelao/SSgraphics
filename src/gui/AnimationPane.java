@@ -58,32 +58,29 @@ public class AnimationPane extends AbstractGamePanel{
 	 * the last line has such a large range (difference < 9).
 	 * This way of doing it results in the appearance of deceleration near the end of the token's path
 	 */
-	public void updateDrawing(){
-		if(currentX < targetX){
-			currentX += (targetX - currentX) / 8;
-		}
-		else if(currentX > targetX){
-			currentX -= (currentX - targetX) / 8;
-		}
-		if(currentY < targetY){
-			currentY += (targetY - currentY) / 8;
-		}
-		else if(currentY > targetY){
-			currentY -= (currentY - targetY) / 8;
-		}
-		int differenceX = Math.abs(targetX - currentX);
-		int differenceY = Math.abs(targetY - currentY);
-		
-		// If the token is 'close enough,' stop drawing.
-		if(differenceX < 9 && differenceY < 9)currentlyDrawing = false;
-	}
-	
-	public void startDrawing(){
+	public void animate(){
+		int differenceX = 10;
+		int differenceY = 10;
 		currentlyDrawing = true;
-	}
-	
-	public boolean currentlyDrawing(){
-		return currentlyDrawing;
+		while(differenceX > 7 || differenceY > 7){
+			paintImmediately(0, 0, getWidth(), getHeight());
+			
+			if(currentX < targetX){
+				currentX += (targetX - currentX) / 8;
+			}
+			else if(currentX > targetX){
+				currentX -= (currentX - targetX) / 8;
+			}
+			if(currentY < targetY){
+				currentY += (targetY - currentY) / 8;
+			}
+			else if(currentY > targetY){
+				currentY -= (currentY - targetY) / 8;
+			}
+			differenceX = Math.abs(targetX - currentX);
+			differenceY = Math.abs(targetY - currentY);
+		}
+		currentlyDrawing = false;
 	}
 	
 	/**
@@ -123,13 +120,21 @@ public class AnimationPane extends AbstractGamePanel{
 			setTarget(currentX, currentY-currentSize);
 			return;
 		case "down":
+			System.out.println("CurrentX: " + currentX + ", TargetX: " + targetX);
+			System.out.println("CurrentY: " + currentY + ", TargetY: " + targetY);
 			setTarget(currentX, currentY+currentSize);
+			System.out.println("After");
+			System.out.println("CurrentX: " + currentX + ", TargetX: " + targetX);
+			System.out.println("CurrentY: " + currentY + ", TargetY: " + targetY);
 			return;
 		case "left":
 			setTarget(currentX-currentSize, currentY);
 			return;
 		case "right":
+			System.out.println("Current: " + currentX + ", Target: " + targetX);
 			setTarget(currentX+currentSize, currentY);
+			System.out.println("After");
+			System.out.println("Current: " + currentX + ", Target: " + targetX);
 			return;
 		}
 	}

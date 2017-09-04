@@ -5,11 +5,11 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 import src.model.Board;
-import src.model.PlayerToken;
+import src.model.Player;
 
 public class CemeteryPanel extends AbstractGamePanel{
 	private static final long serialVersionUID = 1L;
-	private PlayerToken player;
+	private Player player;
 	private Board myModel;
 
 	public CemeteryPanel(Board model) {

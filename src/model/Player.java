@@ -9,7 +9,7 @@ import java.util.List;
  * @author Deacon
  *
  */
-public class PlayerToken implements Token{
+public class Player{
 	public String name;
 	private List<String> available;
 	private List<String> played;
@@ -19,7 +19,7 @@ public class PlayerToken implements Token{
 	private int spawnX;
 	private int spawnY;
 
-	public PlayerToken(String name){
+	public Player(String name){
 		this.name = name;
 
 		// available is a list of tokens that are available to be created
@@ -103,21 +103,9 @@ public class PlayerToken implements Token{
 		return this.name;
 	}
 
-	@Override
 	public String[] getImage() {
 		String[] image = new String[1];
 		image[0] = name;
 		return image;
-	}
-
-	@Override
-	public void rotate() {
-		// Players cannot rotate
-		return;
-	}
-
-	@Override
-	public Token copy() {
-		return new PlayerToken(name);
 	}
 }

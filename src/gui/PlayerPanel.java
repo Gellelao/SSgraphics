@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 
 import src.model.Board;
-import src.model.PlayerToken;
+import src.model.Player;
 import src.model.Token;
 
 public class PlayerPanel extends AbstractGamePanel{
 	private static final long serialVersionUID = 1L;
-	private PlayerToken player;
+	private Player player;
 	private Color colour;
 	private Board myModel;
 	private PlayerPanelController control;
@@ -73,7 +73,7 @@ public class PlayerPanel extends AbstractGamePanel{
 		regions.add(r);
 	}
 
-	public PlayerToken getPlayer(){
+	public Player getPlayer(){
 		return player;
 	}
 }

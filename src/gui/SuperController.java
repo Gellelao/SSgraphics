@@ -5,7 +5,7 @@ import java.awt.Color;
 import javax.swing.JOptionPane;
 
 import src.model.Board;
-import src.model.PlayerToken;
+import src.model.Player;
 import src.model.Token;
 
 public class SuperController {
@@ -69,6 +69,7 @@ public class SuperController {
 
 		int x = p1Control.getPanel().getWidth() + r.getX();
 		int y = boardControl.getPanel().getRealY() + r.getY();
+		
 		animations.setCurrent(x, y, r.getSize(), r.getToken());
 		
 		Character c = t.toString().charAt(0);
@@ -89,7 +90,7 @@ public class SuperController {
 	 * @param t - the token that has been clicked
 	 * @param p - the player owning the token
 	 */
-	public void playerSelect(Token t, PlayerToken p){
+	public void playerSelect(Token t, Player p){
 		if(phase != 0){
 			System.out.println("Not the correct phase");
 			return;
@@ -101,12 +102,16 @@ public class SuperController {
 				view.setPassToShiny(true);
 			}
 			if(beeper.getError() > 2) {
-				JOptionPane.showMessageDialog(null, "There is a Piece occupying your spawn location\nYou must click the 'pass' button");
+				JOptionPane.showMessageDialog(null, "There is a Token occupying your spawn location\nYou must click the 'pass' button");
 			}
 			return;
 		}
 		// If the player who owns the clicked token is the player taking their turn, continue.
 		if(p.toString().equals(myModel.getCurrent().toString())){
+			// Animated the current player's panel:
+			if(p.toString().equals("1"))p1Control.getPanel().shiftDown();
+			else p2Control.getPanel().shiftDown();
+			// Animating finished
 			selected = null;
 			view.setSelectionPanelToken(t, p.toString());
 			view.switchPlayerCard("Card with the four rotations of a token", p.toString());
@@ -128,14 +133,18 @@ public class SuperController {
 		myModel.pushCommandHistory("create");
 		
 		// Animation Stuff starts
+		AbstractGamePanel toAnimate;
+		
 		Character c = r.getToken().toString().charAt(0);
 		if(Character.isUpperCase(c)){
 			animations.setCurrent(r);
+			toAnimate = s1Control.getPanel();
 		}
 		else{
 			int x = p1Control.getPanel().getWidth() + boardControl.getPanel().getWidth() + r.getX();
 			int y = r.getY();
 			animations.setCurrent(x, y, r.getSize(), r.getToken());
+			toAnimate = s2Control.getPanel();
 		}
 		
 		// For some reason each player needed a different number when calculating the target y
@@ -147,12 +156,9 @@ public class SuperController {
 		x += (myModel.getCurrent().getSpawnX()+1) * boardControl.getPanel().getTokenSize();
 		
 		animations.setTarget(x, y);
-		animations.startDrawing();
+		animations.animate();
 		
-		while(animations.currentlyDrawing()){
-			animations.updateDrawing();
-			animations.paintImmediately(0, 0, animations.getWidth(), animations.getHeight());
-		}
+		toAnimate.shiftDown();
 		// Animation stuff ends
 		
 		myModel.spawnToken(r.getToken());
@@ -190,12 +196,7 @@ public class SuperController {
 		
 		// Animation stuff starts
 		animations.setMove(direction);
-		animations.startDrawing();
-		
-		while(animations.currentlyDrawing()){
-			animations.updateDrawing();
-			animations.paintImmediately(0, 0, animations.getWidth(), animations.getHeight());
-		}
+		animations.animate();
 		// ANimation stuff ends
 		
 		myModel.moveToken(name, direction);

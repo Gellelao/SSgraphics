@@ -20,8 +20,7 @@ public class TokenSelectionPanelController implements Controller, KeyListener, M
 	
 	@Override
 	public AbstractGamePanel getPanel() {
-		// TODO Auto-generated method stub
-		return null;
+		return panel;
 	}
 
 	@Override

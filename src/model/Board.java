@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Observable;
 import java.util.Stack;
 
-import src.model.PlayerToken;
+import src.model.Player;
 
 /**
  * Class that takes care of the 2d array of tokens called the board
@@ -15,26 +15,26 @@ import src.model.PlayerToken;
  */
 public class Board extends Observable{
 	private Token[][] board;
-	private HashMap<String, PieceToken> pieceNames;
+	private HashMap<String, Token> pieceNames;
 	private Stack<Token[][]> history;
 	private Stack<ArrayList<String>> cmHistory;
 	private ArrayList<String> cemetery;
 	private Stack<String> commandHistory;
 
-	PlayerToken one;
-	PlayerToken two;
-	PlayerToken current;
+	Player one;
+	Player two;
+	Player current;
 
 	public Board(){
 		board = new Token[10][10];
 		history = new Stack<Token[][]>();
-		pieceNames = new HashMap<String, PieceToken>();
+		pieceNames = new HashMap<String, Token>();
 		cmHistory = new Stack<ArrayList<String>>();
 		cemetery = new ArrayList<String>();
 		commandHistory = new Stack<String>();
 
-		one = new PlayerToken("1");
-		two = new PlayerToken("2");
+		one = new Player("1");
+		two = new Player("2");
 		//addToken(one, 1, 1);
 		//addToken(two, 8, 8);
 
@@ -45,10 +45,10 @@ public class Board extends Observable{
 
 	public Token[][] getBoard(){return board;}
 
-	public PlayerToken getP1() {return one;}
-	public PlayerToken getP2() {return two;}
+	public Player getP1() {return one;}
+	public Player getP2() {return two;}
 
-	public Token[][] getAvailable(PlayerToken p) {
+	public Token[][] getAvailable(Player p) {
 		ArrayList<String> names = (ArrayList<String>) p.getAvailable();
 		String[][] nameArray = ListToGrid(names, 3, 8);
 		Token[][] tokens = namesToTokens(nameArray);
@@ -61,7 +61,7 @@ public class Board extends Observable{
 		return tokens;
 	}
 
-	public PlayerToken getCurrent() {
+	public Player getCurrent() {
 		return current;
 	}
 
@@ -189,7 +189,7 @@ public class Board extends Observable{
 	 * @param y
 	 */
 	public void addToken(String name, int x, int y) {
-		PieceToken p = pieceNames.get(name);
+		Token p = pieceNames.get(name);
 		p.setToDefault();
 		board[x][y] = p;
 	}
@@ -376,54 +376,54 @@ public class Board extends Observable{
 	}
 
 	private void initialiseMap() {
-		pieceNames.put("a", new PieceToken("a", 1, 2, 1, 1));
-		pieceNames.put("b", new PieceToken("b", 0, 0, 0, 0));
-		pieceNames.put("c", new PieceToken("c", 1, 2, 1, 2));
-		pieceNames.put("d", new PieceToken("d", 1, 0, 1, 2));
-		pieceNames.put("e", new PieceToken("e", 1, 0, 1, 0));
-		pieceNames.put("f", new PieceToken("f", 1, 0, 1, 1));
-		pieceNames.put("g", new PieceToken("g", 1, 2, 2, 1));
-		pieceNames.put("h", new PieceToken("h", 1, 2, 0, 1));
-		pieceNames.put("i", new PieceToken("i", 1, 0, 2, 1));
-		pieceNames.put("j", new PieceToken("j", 1, 0, 0, 1));
-		pieceNames.put("k", new PieceToken("k", 2, 2, 2, 2));
-		pieceNames.put("l", new PieceToken("l", 1, 1, 1, 1));
-		pieceNames.put("m", new PieceToken("m", 1, 0, 0, 0));
-		pieceNames.put("n", new PieceToken("n", 1, 0, 0, 2));
-		pieceNames.put("o", new PieceToken("o", 1, 2, 0, 0));
-		pieceNames.put("p", new PieceToken("p", 1, 0, 2, 0));
-		pieceNames.put("q", new PieceToken("q", 1, 0, 2, 2));
-		pieceNames.put("r", new PieceToken("r", 1, 2, 2, 0));
-		pieceNames.put("s", new PieceToken("s", 1, 2, 0, 2));
-		pieceNames.put("t", new PieceToken("t", 1, 2, 2, 2));
-		pieceNames.put("u", new PieceToken("u", 0, 2, 0, 0));
-		pieceNames.put("v", new PieceToken("v", 0, 2, 2, 0));
-		pieceNames.put("w", new PieceToken("w", 0, 2, 0, 2));
-		pieceNames.put("x", new PieceToken("x", 0, 2, 2, 2));
+		pieceNames.put("a", new Token("a", 1, 2, 1, 1));
+		pieceNames.put("b", new Token("b", 0, 0, 0, 0));
+		pieceNames.put("c", new Token("c", 1, 2, 1, 2));
+		pieceNames.put("d", new Token("d", 1, 0, 1, 2));
+		pieceNames.put("e", new Token("e", 1, 0, 1, 0));
+		pieceNames.put("f", new Token("f", 1, 0, 1, 1));
+		pieceNames.put("g", new Token("g", 1, 2, 2, 1));
+		pieceNames.put("h", new Token("h", 1, 2, 0, 1));
+		pieceNames.put("i", new Token("i", 1, 0, 2, 1));
+		pieceNames.put("j", new Token("j", 1, 0, 0, 1));
+		pieceNames.put("k", new Token("k", 2, 2, 2, 2));
+		pieceNames.put("l", new Token("l", 1, 1, 1, 1));
+		pieceNames.put("m", new Token("m", 1, 0, 0, 0));
+		pieceNames.put("n", new Token("n", 1, 0, 0, 2));
+		pieceNames.put("o", new Token("o", 1, 2, 0, 0));
+		pieceNames.put("p", new Token("p", 1, 0, 2, 0));
+		pieceNames.put("q", new Token("q", 1, 0, 2, 2));
+		pieceNames.put("r", new Token("r", 1, 2, 2, 0));
+		pieceNames.put("s", new Token("s", 1, 2, 0, 2));
+		pieceNames.put("t", new Token("t", 1, 2, 2, 2));
+		pieceNames.put("u", new Token("u", 0, 2, 0, 0));
+		pieceNames.put("v", new Token("v", 0, 2, 2, 0));
+		pieceNames.put("w", new Token("w", 0, 2, 0, 2));
+		pieceNames.put("x", new Token("x", 0, 2, 2, 2));
 
-		pieceNames.put("A", new PieceToken("A", 1, 2, 1, 1));
-		pieceNames.put("B", new PieceToken("B", 0, 0, 0, 0));
-		pieceNames.put("C", new PieceToken("C", 1, 2, 1, 2));
-		pieceNames.put("D", new PieceToken("D", 1, 0, 1, 2));
-		pieceNames.put("E", new PieceToken("E", 1, 0, 1, 0));
-		pieceNames.put("F", new PieceToken("F", 1, 0, 1, 1));
-		pieceNames.put("G", new PieceToken("G", 1, 2, 2, 1));
-		pieceNames.put("H", new PieceToken("H", 1, 2, 0, 1));
-		pieceNames.put("I", new PieceToken("I", 1, 0, 2, 1));
-		pieceNames.put("J", new PieceToken("J", 1, 0, 0, 1));
-		pieceNames.put("K", new PieceToken("K", 2, 2, 2, 2));
-		pieceNames.put("L", new PieceToken("L", 1, 1, 1, 1));
-		pieceNames.put("M", new PieceToken("M", 1, 0, 0, 0));
-		pieceNames.put("N", new PieceToken("N", 1, 0, 0, 2));
-		pieceNames.put("O", new PieceToken("O", 1, 2, 0, 0));
-		pieceNames.put("P", new PieceToken("P", 1, 0, 2, 0));
-		pieceNames.put("Q", new PieceToken("Q", 1, 0, 2, 2));
-		pieceNames.put("R", new PieceToken("R", 1, 2, 2, 0));
-		pieceNames.put("S", new PieceToken("S", 1, 2, 0, 2));
-		pieceNames.put("T", new PieceToken("T", 1, 2, 2, 2));
-		pieceNames.put("U", new PieceToken("U", 0, 2, 0, 0));
-		pieceNames.put("V", new PieceToken("V", 0, 2, 2, 0));
-		pieceNames.put("W", new PieceToken("W", 0, 2, 0, 2));
-		pieceNames.put("X", new PieceToken("X", 0, 2, 2, 2));
+		pieceNames.put("A", new Token("A", 1, 2, 1, 1));
+		pieceNames.put("B", new Token("B", 0, 0, 0, 0));
+		pieceNames.put("C", new Token("C", 1, 2, 1, 2));
+		pieceNames.put("D", new Token("D", 1, 0, 1, 2));
+		pieceNames.put("E", new Token("E", 1, 0, 1, 0));
+		pieceNames.put("F", new Token("F", 1, 0, 1, 1));
+		pieceNames.put("G", new Token("G", 1, 2, 2, 1));
+		pieceNames.put("H", new Token("H", 1, 2, 0, 1));
+		pieceNames.put("I", new Token("I", 1, 0, 2, 1));
+		pieceNames.put("J", new Token("J", 1, 0, 0, 1));
+		pieceNames.put("K", new Token("K", 2, 2, 2, 2));
+		pieceNames.put("L", new Token("L", 1, 1, 1, 1));
+		pieceNames.put("M", new Token("M", 1, 0, 0, 0));
+		pieceNames.put("N", new Token("N", 1, 0, 0, 2));
+		pieceNames.put("O", new Token("O", 1, 2, 0, 0));
+		pieceNames.put("P", new Token("P", 1, 0, 2, 0));
+		pieceNames.put("Q", new Token("Q", 1, 0, 2, 2));
+		pieceNames.put("R", new Token("R", 1, 2, 2, 0));
+		pieceNames.put("S", new Token("S", 1, 2, 0, 2));
+		pieceNames.put("T", new Token("T", 1, 2, 2, 2));
+		pieceNames.put("U", new Token("U", 0, 2, 0, 0));
+		pieceNames.put("V", new Token("V", 0, 2, 2, 0));
+		pieceNames.put("W", new Token("W", 0, 2, 0, 2));
+		pieceNames.put("X", new Token("X", 0, 2, 2, 2));
 	}
 }

@@ -20,6 +20,9 @@ public abstract class AbstractGamePanel extends JPanel{
 
 	int realX;
 	int realY;
+	
+	int currentY;
+	boolean moving = false;
 
 	Token[][] grid;
 
@@ -45,13 +48,16 @@ public abstract class AbstractGamePanel extends JPanel{
 
 		// Draw the board grid background (This results in the black borders)
 		g.setColor(Color.BLACK);
-		g.fillRect(realX, realY, boardWidth, boardHeight);
+		if(moving) g.fillRect(realX, currentY, boardWidth, boardHeight);
+		else g.fillRect(realX, realY, boardWidth, boardHeight);
 		
 		// Draw each tile
 		for(int i = 0; i < grid.length; i++) {
 			for(int j = 0; j < grid[0].length; j++) {
 				int x = realX+borderWeight+(i*(tokenSize+borderWeight));
-				int y = realY+borderWeight+(j*(tokenSize+borderWeight));
+				int y;
+				if(moving) y = currentY+borderWeight+(j*(tokenSize+borderWeight));
+				else       y = realY+borderWeight+(j*(tokenSize+borderWeight));
 
 				// Add "tokenRegions" to make click detection easier
 				addRegion(new TokenRegion(grid[i][j], x, y, tokenSize));
@@ -60,6 +66,10 @@ public abstract class AbstractGamePanel extends JPanel{
 				applyRules(g, i, j, x, y);
 			}
 		}
+	}
+	
+	private void anchorCurrentY(){
+		currentY = realY;
 	}
 	
 	// These are used the find out where to draw the "flying" tokens when animating
@@ -159,6 +169,19 @@ public abstract class AbstractGamePanel extends JPanel{
 		if(grid[i][j] != null) {
 			drawToken((Graphics2D) g, x, y, tokenSize, grid[i][j]);
 		}
+	}
+	
+	protected void shiftDown(){
+		anchorCurrentY();
+		moving = true;
+		int acc = 1;
+		while(currentY < this.getHeight()){
+			//System.out.println(this.getHeight());
+			currentY += acc;
+			acc+=0.2;
+			paintImmediately(0,0, getWidth(), getHeight());
+		}
+		moving = false;
 	}
 
 	public void paintComponent(Graphics _g) {

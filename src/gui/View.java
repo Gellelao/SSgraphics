@@ -21,7 +21,7 @@ import javax.swing.JSplitPane;
 import javax.swing.WindowConstants;
 
 import src.model.Board;
-import src.model.PieceToken;
+import src.model.Token;
 import src.model.Token;
 
 public class View extends JFrame implements Observer{
