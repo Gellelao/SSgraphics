@@ -66,8 +66,10 @@ public class SuperController {
 		if(t.equals(selected)){
 			if(edge != null)moveSelected(edge);
 		}
-		
-		animations.setCurrent(r);
+
+		int x = p1Control.getPanel().getWidth() + r.getX();
+		int y = boardControl.getPanel().getRealY() + r.getY();
+		animations.setCurrent(x, y, r.getSize(), r.getToken());
 		
 		Character c = t.toString().charAt(0);
 		if(Character.isUpperCase(c)) {
@@ -125,17 +127,33 @@ public class SuperController {
 		myModel.saveState();
 		myModel.pushCommandHistory("create");
 		
-		animations.setCurrent(r);
+		// Animation Stuff starts
+		Character c = r.getToken().toString().charAt(0);
+		if(Character.isUpperCase(c)){
+			animations.setCurrent(r);
+		}
+		else{
+			int x = p1Control.getPanel().getWidth() + boardControl.getPanel().getWidth() + r.getX();
+			int y = r.getY();
+			animations.setCurrent(x, y, r.getSize(), r.getToken());
+		}
 		
-		int x = myModel.getCurrent().getSpawnX();
-		int y = myModel.getCurrent().getSpawnY();
-		x += p1Control.getPanel().getWidth();
+		// For some reason each player needed a different number when calculating the target y
+		// Luckily these numbers happened to be the player's names:                      |
+		int offset = Integer.parseInt(myModel.getCurrent().toString());//                v
+		
+		int y = boardControl.getPanel().getRealY() + (myModel.getCurrent().getSpawnY()+offset) * boardControl.getPanel().getTokenSize();
+		int x = p1Control.getPanel().getWidth() + boardControl.getPanel().getRealX();
+		x += (myModel.getCurrent().getSpawnX()+1) * boardControl.getPanel().getTokenSize();
+		
 		animations.setTarget(x, y);
 		animations.startDrawing();
+		
 		while(animations.currentlyDrawing()){
 			animations.updateDrawing();
 			animations.paintImmediately(0, 0, animations.getWidth(), animations.getHeight());
 		}
+		// Animation stuff ends
 		
 		myModel.spawnToken(r.getToken());
 		
@@ -169,6 +187,17 @@ public class SuperController {
 		}
 		myModel.saveState();
 		myModel.pushCommandHistory("move");
+		
+		// Animation stuff starts
+		animations.setMove(direction);
+		animations.startDrawing();
+		
+		while(animations.currentlyDrawing()){
+			animations.updateDrawing();
+			animations.paintImmediately(0, 0, animations.getWidth(), animations.getHeight());
+		}
+		// ANimation stuff ends
+		
 		myModel.moveToken(name, direction);
 		myModel.getCurrent().changePiece(name);
 		stats.move(1);

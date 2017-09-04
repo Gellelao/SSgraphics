@@ -1,19 +1,23 @@
 package src.gui;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.*; import javax.swing.*;
-
+import java.util.*;
 import src.model.Board;
 import src.model.Token;
 
+/**
+ * Panel representing the playing board. This panel sits in the center of the screen
+ * It uses the myModel field to get the grid of tokens it needs to draw, using the draw
+ * method from AbstractGamePanel which this extends
+ * 
+ * @author Deacon
+ *
+ */
 public class BoardPanel extends AbstractGamePanel {
 	private static final long serialVersionUID = 1L;
 
 	private Board myModel;
 	private BoardPanelController control;
 	private ArrayList<TokenRegion> regions;
-	private Token selected;
 	String message = "Welcome";
 
 	public BoardPanel(Board model){
@@ -21,12 +25,18 @@ public class BoardPanel extends AbstractGamePanel {
 		control = new BoardPanelController(myModel, this);
 		regions = new ArrayList<TokenRegion>();
 
-
 		this.addKeyListener(control);
 		this.addMouseListener(control);
 		this.setFocusable(true);
 	}
 
+	/**
+	 * Finds if there is a TokenRegion on this panel that contains the given x and y coords
+	 * 
+	 * @param x
+	 * @param y
+	 * @return - the TokenRegion that contains x and y, or null if none of the regions contain it
+	 */
 	public TokenRegion getRegion(int x, int y){
 		for(TokenRegion r : regions){
 			if(r.contains(x, y)){
@@ -37,10 +47,18 @@ public class BoardPanel extends AbstractGamePanel {
 		return null;
 	}
 
+	/**
+	 * Sets the message that will be displayed at the top of the board
+	 * 
+	 * @param m
+	 */
 	public void setMessage(String m) {
 		this.message = m;
 	}
 
+	/**
+	 * Fills the background of the board panel, and draws the grid onto it
+	 */
 	@Override
 	protected void drawAll(Graphics2D g) {
 		g.setColor(getBGColour());
@@ -50,6 +68,10 @@ public class BoardPanel extends AbstractGamePanel {
 		g.drawString(message, 20, 20);
 
 		regions.clear();
+		//
+	   // Here is the main real point of difference between panel versions:
+	   // This panel uses myModel.getBoard() as the grid to draw, other panels use other grids
+		//
 		super.drawGrid(g, myModel.getBoard());
 
 		Token selected = control.getSuperSelected();
@@ -62,25 +84,31 @@ public class BoardPanel extends AbstractGamePanel {
 				}
 			}
 		}
-		// Important:
+		// Important for the keyListener to work:
 		this.requestFocusInWindow();
 	}
 
+	/**
+	 * Checks the given i and j to see if a special tile should be drawn, e.g. the player's faces or spawn tiles
+	 * Also draws the checkers. Other panels do not have this implementation of this method because they do not
+	 * need any special tiles
+	 */
 	@Override
 	protected void applyRules(Graphics g, int i, int j, int x, int y) {
+		// Checkers:
 		if((i+j)%2 != 1) {
 			g.setColor(getTileColour().brighter());
 		}
 		else g.setColor(getTileColour().darker());
 		g.fillRect(x, y, tokenSize, tokenSize);
 
+		// Faces:
 		if((i == 1 && j == 1)||(i == 8 && j == 8)){
 			if(i == 1) g.setColor(Color.YELLOW.brighter());
 			else g.setColor(Color.GREEN.brighter());
 			
 			g.fillRect(x, y, tokenSize, tokenSize);
 			
-			// Draw the face
 			int third = tokenSize/3;
 			int eyeSize = tokenSize/8;
 			g.setColor(Color.BLACK);
@@ -89,6 +117,8 @@ public class BoardPanel extends AbstractGamePanel {
 			g.fillArc(x+third+eyeSize/4, y+third+third, third, third/2, 45, 90);
 			return;
 		}
+		
+		// Other special tiles:
 		if(i == 2 && j == 2 && grid[i][j] == null) {
 			g.setColor(Color.YELLOW.darker());
 			g.fillRect(x, y, tokenSize, tokenSize);
@@ -113,8 +143,11 @@ public class BoardPanel extends AbstractGamePanel {
 			g.setColor(getBGColour());
 			g.fillRect(x, y, tokenSize, tokenSize);
 		}
+		
+		// Draw token:
 		if(grid[i][j] != null) {
 			super.drawToken((Graphics2D) g, x, y, tokenSize, grid[i][j]);
+			
 			// Draw indicator to show piece has been changed this turn
 			if(myModel.getCurrent().pieceIsChanged(grid[i][j].toString())){
 				int size = tokenSize/3;

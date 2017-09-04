@@ -1,15 +1,18 @@
 package src.gui;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-
 import javax.swing.JPanel;
-
-import src.model.Board;
 import src.model.Token;
 
+/**
+ * Each different panel type in the game extends this class, because they all require some form of
+ * grid or token drawing.
+ * 
+ * @author Deacon
+ *
+ */
 public abstract class AbstractGamePanel extends JPanel{
 	private static final long serialVersionUID = 1L;
 	int borderWeight;
@@ -40,9 +43,10 @@ public abstract class AbstractGamePanel extends JPanel{
 		realX = getWidth()/2-boardWidth/2;
 		realY = getHeight()/2-boardHeight/2;
 
-		// Draw the board grid background
+		// Draw the board grid background (This results in the black borders)
 		g.setColor(Color.BLACK);
 		g.fillRect(realX, realY, boardWidth, boardHeight);
+		
 		// Draw each tile
 		for(int i = 0; i < grid.length; i++) {
 			for(int j = 0; j < grid[0].length; j++) {
@@ -57,6 +61,11 @@ public abstract class AbstractGamePanel extends JPanel{
 			}
 		}
 	}
+	
+	// These are used the find out where to draw the "flying" tokens when animating
+	public int getRealX(){return realX;}
+	public int getRealY(){return realY;}
+	public int getTokenSize(){return tokenSize;}
 
 	/**
 	 * Draws a token, detects which colour(yellow/green),
@@ -71,6 +80,8 @@ public abstract class AbstractGamePanel extends JPanel{
 	protected void drawToken(Graphics2D g, int x, int y, int size, Token p){
 		String[] tokenInfo = p.getImage();
 		
+		// Token colour depends on player - one player uses uppercase token names
+		// so these are used to identify the player controlling the token
 		if(tokenInfo[0].toUpperCase().equals(tokenInfo[0])) {
 			g.setColor(Color.YELLOW);
 		}
@@ -80,40 +91,44 @@ public abstract class AbstractGamePanel extends JPanel{
 		// Draw the red swords and shields
 		g.setColor(Color.RED);
 		int barWidth = size/7;
-			if(tokenInfo[1].equals("1")) {
-				// North Sword
-				g.fillRect(x + size/2-(barWidth/2), y, barWidth, size/2);
-			}
-			if(tokenInfo[1].equals("2")) {
-				// North Shield
-				g.fillRect(x, y, size, barWidth);
-			}
-			if(tokenInfo[2].equals("1")) {
-				// East Sword
-				g.fillRect(x+size/2, y + size/2-(barWidth/2), size/2, barWidth);
-			}
-			if(tokenInfo[2].equals("2")) {
-				// East Shield
-				g.fillRect(x+size-barWidth, y, barWidth, size);
-			}
-			if(tokenInfo[3].equals("1")) {
-				// South Sword
-				g.fillRect(x + size/2-(barWidth/2), y+size/2, barWidth, size/2);
-			}
-			if(tokenInfo[3].equals("2")) {
-				// South Shield
-				g.fillRect(x, y+size-barWidth, size, barWidth);
-			}
-			if(tokenInfo[4].equals("1")) {
-				// West Sword
-				g.fillRect(x, y + size/2-(barWidth/2), size/2+(barWidth/2), barWidth);
-			}
-			if(tokenInfo[4].equals("2")) {
-				// West Shield
-				g.fillRect(x, y, barWidth, size);
-			}
+		
+		if(tokenInfo[1].equals("1")) {
+			// North Sword
+			g.fillRect(x + size/2-(barWidth/2), y, barWidth, size/2);
+		}
+		if(tokenInfo[1].equals("2")) {
+			// North Shield
+			g.fillRect(x, y, size, barWidth);
+		}
+		if(tokenInfo[2].equals("1")) {
+			// East Sword
+			g.fillRect(x+size/2, y + size/2-(barWidth/2), size/2, barWidth);
+		}
+		if(tokenInfo[2].equals("2")) {
+			// East Shield
+			g.fillRect(x+size-barWidth, y, barWidth, size);
+		}
+		if(tokenInfo[3].equals("1")) {
+			// South Sword
+			g.fillRect(x + size/2-(barWidth/2), y+size/2, barWidth, size/2);
+		}
+		if(tokenInfo[3].equals("2")) {
+			// South Shield
+			g.fillRect(x, y+size-barWidth, size, barWidth);
+		}
+		if(tokenInfo[4].equals("1")) {
+			// West Sword
+			g.fillRect(x, y + size/2-(barWidth/2), size/2+(barWidth/2), barWidth);
+		}
+		if(tokenInfo[4].equals("2")) {
+			// West Shield
+			g.fillRect(x, y, barWidth, size);
+		}
 	}
 
+	/**
+	 * @return the background colour for tiles drawn by drawGrid(). Default is gray
+	 */
 	protected Color getTileColour() {
 		return Color.GRAY.darker();
 	}
@@ -123,7 +138,20 @@ public abstract class AbstractGamePanel extends JPanel{
 	protected abstract Color getBGColour();
 
 	protected abstract Controller getController();
+	
+	public abstract void addRegion(TokenRegion r);
 
+	
+	/**
+	 * Most panels that extends this class use this default implementation of applyRules,
+	 * because they only need to draw the tokens and nothing else. The boardPanel overrides this.
+	 * 
+	 * @param g - graphics object
+	 * @param i - the row of the grid to use
+	 * @param j - the column of the grid to use
+	 * @param x - the x coordinate to draw to
+	 * @param y - the y coordinate to draw to
+	 */
 	protected void applyRules(Graphics g, int i, int j, int x, int y) {
 		g.setColor(getTileColour());
 		g.fillRect(x, y, tokenSize, tokenSize);
@@ -132,8 +160,6 @@ public abstract class AbstractGamePanel extends JPanel{
 			drawToken((Graphics2D) g, x, y, tokenSize, grid[i][j]);
 		}
 	}
-	
-	public abstract void addRegion(TokenRegion r);
 
 	public void paintComponent(Graphics _g) {
 		super.paintComponent(_g);
