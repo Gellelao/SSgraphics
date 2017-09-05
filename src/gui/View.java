@@ -69,35 +69,35 @@ public class View extends JFrame implements Observer{
 		JPanel menuPanel = new JPanel(new BorderLayout());
 		JPanel menuButtons = new JPanel();
 		
-		// Make the 'Play' button
-		JButton play = new JButton("Begin New Game");
-		play.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				switchToCard(cards, GAMEPANEL);
-			}});
-		play.setFocusable(false);
+				// Make the 'Play' button
+				JButton play = new JButton("Begin New Game");
+				play.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						switchToCard(cards, GAMEPANEL);
+					}});
+				play.setFocusable(false);
+				
+				// Make the 'Info' button
+				JButton info = new JButton("Info");
+				info.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						JOptionPane.showMessageDialog(null, "Made by Deacon McIntyre, 2017");
+					}});
+				info.setFocusable(false);
+				
+				// Make the 'Quit' button
+				JButton quit = new JButton("Quit");
+				quit.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						System.exit(1);
+					}});
+				quit.setFocusable(false);
 		
-		// Make the 'Info' button
-		JButton info = new JButton("Info");
-		info.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(null, "Made by Deacon McIntyre, 2017");
-			}});
-		info.setFocusable(false);
-		
-		// Make the 'Quit' button
-		JButton quit = new JButton("Quit");
-		quit.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				System.exit(1);
-			}});
-		quit.setFocusable(false);
-		
-		// Add the buttons to a subpanel
+		// Add the buttons to a sub-panel
 		menuButtons.add(play);
 		menuButtons.add(info);
 		menuButtons.add(quit);
-		// Add the subpanel to the menu
+		// Add the sub-panel to the menu
 		menuPanel.add(menuButtons, BorderLayout.NORTH);
 		
 		// Add the game title to the menu
@@ -105,55 +105,66 @@ public class View extends JFrame implements Observer{
 
 		menuButtons.setFocusable(false);
 		menuPanel.setFocusable(false);
-
-
-		// Make the game panel
-		JPanel game = new JPanel(new BorderLayout());
+		
+				// Make the 'Undo' button
+				JButton undo = new JButton("Undo");
+				undo.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						supControl.undo();
+				}});
+				undo.setFocusable(false);
+				
+				// Make the 'Pass' button
+				pass = new JButton("Pass");
+				pass.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						supControl.pass();
+				}});
+				pass.setFocusable(false);
+				
+				// Make the 'Surrender' button
+				JButton surrender = new JButton("Surrender");
+				surrender.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						
+						String playerName;
+						if(myModel.getCurrent().toString().equals("1")){
+							 playerName = "Green";
+						}
+						else playerName = "Yellow";
+		
+						JOptionPane.showMessageDialog(null, playerName + " Player Wins!");
+		
+						StatTracker s = supControl.getStats();
+						JOptionPane.showMessageDialog(null, "Stats: \n\n"
+								+ "Moves:  " + s.getMoves() + "\n"
+								+ "Undos:  " + s.getUndos() + "\n"
+								+ "Time:   " + s.getTime() + " seconds\n"
+								+ "Deaths: " + s.getDeaths() + "\n");
+						switchToCard(cards, MENUPANEL);
+				}});
+				surrender.setFocusable(false);
+		
+		// Make a sub-panel to hold the buttons
 		JPanel buttonRow = new JPanel();
-		JButton undo = new JButton("Undo");
-			undo.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					supControl.undo();
-			}});
-			undo.setFocusable(false);
-		pass = new JButton("Pass");
-			pass.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					supControl.pass();
-			}});
-			pass.setFocusable(false);
-		JButton surrender = new JButton("Surrender");
-			surrender.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					String playerName;
-					if(myModel.getCurrent().toString().equals("1")){
-						playerName = "Green";
-					}
-					else playerName = "Yellow";
 
-					JOptionPane.showMessageDialog(null, playerName + " Player Wins!");
-
-					StatTracker s = supControl.getStats();
-					JOptionPane.showMessageDialog(null, "Stats: \n\n"
-							+ "Moves:  " + s.getMoves() + "\n"
-							+ "Undos:  " + s.getUndos() + "\n"
-							+ "Time:   " + s.getTime() + " seconds\n"
-							+ "Deaths: " + s.getDeaths() + "\n");
-					switchToCard(cards, MENUPANEL);
-			}});
-			surrender.setFocusable(false);
-
+		// Add the buttons to the sub-panel
 		buttonRow.add(undo);
 		buttonRow.add(pass);
 		buttonRow.add(surrender);
 		buttonRow.setFocusable(false);
 
-		BoardPanel boardPanel = new BoardPanel(myModel);
+		// Create the panels that make up the main game
+		// These use the classes that extend AbstractGamePanel
+		CemeteryPanel g1 =         new CemeteryPanel(myModel);
+		BoardPanel boardPanel =    new BoardPanel(myModel);
 		PlayerPanel playerPanel1 = new PlayerPanel(myModel, "p1");
 		PlayerPanel playerPanel2 = new PlayerPanel(myModel, "p2");
-		selectionPanel1 = new TokenSelectionPanel(myModel, "p1");
-		selectionPanel2 = new TokenSelectionPanel(myModel, "p2");
+		selectionPanel1 =          new TokenSelectionPanel(myModel, "p1");
+		selectionPanel2 =          new TokenSelectionPanel(myModel, "p2");
 
+		// The yellow and green panels on the side are both CardLayout panels,
+		// which contain a playerPanel and a TokenSelectionPanel
 		p1 = new JPanel(new CardLayout());
 			p1.add(playerPanel1, PLAYERTOKENPANEL);
 			p1.add(selectionPanel1, TOKENSELECTIONPANEL);
@@ -161,61 +172,74 @@ public class View extends JFrame implements Observer{
 			p2.add(playerPanel2, PLAYERTOKENPANEL);
 			p2.add(selectionPanel2, TOKENSELECTIONPANEL);
 
-		CemeteryPanel g1 = new CemeteryPanel(myModel);
+		// Create the almighty SuperController, now that we have the main panels (which have initialized their own controllers)
 		supControl = new SuperController(myModel, this, boardPanel.getController(), playerPanel1.getController(), playerPanel2.getController(), selectionPanel1.getController(), selectionPanel2.getController());
 
-		p1.setFocusable(false);
-		p2.setFocusable(false);
-		playerPanel1.setFocusable(false);
-		playerPanel2.setFocusable(false);
-		selectionPanel1.setFocusable(false);
-		selectionPanel2.setFocusable(false);
-
+		// Combine the main panels in splits, so they are all resizeable
 		JSplitPane middleSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, boardPanel, g1);
 		JSplitPane leftAndCenterSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, p1, middleSplit);
 		JSplitPane allThreeSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftAndCenterSplit, p2);
 
+		// Make the splits look nice
 		leftAndCenterSplit.setResizeWeight(0.33);
 		allThreeSplit.setResizeWeight(0.75);
 		middleSplit.setResizeWeight(0.75);
 
-		//JLabel turnInfo = new JLabel("Sword and Shield Game", JLabel.CENTER), BorderLayout.CENTER);
-
+		// Make a 'game' panel to hold the final split-pane and the game buttons
+		JPanel game = new JPanel(new BorderLayout());
+		
+		// Add the split-pane and button row to the 'game' panel
 		game.add(buttonRow, BorderLayout.NORTH);
-		//game.add(new JLabel(message, JLabel.CENTER), BorderLayout.NORTH);
 		game.add(allThreeSplit, BorderLayout.CENTER);
-		//game.add(new GamePanel(), BorderLayout.SOUTH);
-		//game.add(p1, BorderLayout.EAST);
-		//game.add(p2, BorderLayout.WEST);
 
-		// Add the two panels to the cards panel
+		// Add the menu and the game to the cards panel
 		cards.add(menuPanel, MENUPANEL);
 		cards.add(game, GAMEPANEL);
 		cards.setBounds(0, 0, screenWidth, screenHeight);
 		
+		
+		//=========================
+		// Set up animation panels:
+		//=========================
+		// Create a layeredPane in order to animate things across the screen
 		JLayeredPane layers = new JLayeredPane();
 		layers.setBounds(0, 0, screenWidth, screenHeight);
 		
+		// Set up the custom AnimationPane and give it to the SuperController
 		AnimationPane animationLayer = new AnimationPane();
 		supControl.setAnimations(animationLayer);
 
+		// Add the 'cards' panel into the layeredPane, along with the animationPane
 		layers.add(cards, 1);
 		layers.add(animationLayer, 0);
 
 		animationLayer.setOpaque(false);
 		animationLayer.setBounds(0, 0, screenWidth, screenHeight);
 		animationLayer.validate();
-		
+	
+		// Finally, add the layeredPanel to this View (View extends JFrame)
 		this.add(layers);
 		this.setVisible(true);
 	}
 
+	/**
+	 * Sets the token which will be shown in four rotations
+	 * 
+	 * @param t - the token to show
+	 * @param player - The owner of the panel which will be changed
+	 */
 	public void setSelectionPanelToken(Token t, String player){
 		if(player.equals("1"))
 			selectionPanel1.setTokenToDraw(t);
 		else selectionPanel2.setTokenToDraw(t);
 	}
 
+	/**
+	 * Switches the given player's panel to the card identified by String s
+	 * 
+	 * @param s - the Card identifier string
+	 * @param player - The player who owns the panel that will be acted on
+	 */
 	public void switchPlayerCard(String s, String player){
 		if(player.equals("1")){
 			CardLayout layout = (CardLayout) p1.getLayout();
@@ -227,6 +251,11 @@ public class View extends JFrame implements Observer{
 		}
 	}
 	
+	/**
+	 * Sets the pass button to be bright yellow, or sets it to default, depending on the boolean
+	 * 
+	 * @param on - if true, the pass button becomes yellow, otherwise default
+	 */
 	public void setPassToShiny(boolean on) {
 		if(on) {
 			pass.setForeground(new Color(165, 163, 38));
@@ -234,10 +263,17 @@ public class View extends JFrame implements Observer{
 		}
 		else {
 			pass.setForeground(Color.BLACK);
+			// Just a way to get the default colour of buttons
 			pass.setBackground(new JButton().getBackground());
 		}
 	}
 
+	/**
+	 * A general method for switching between cards in a cardLayout
+	 * 
+	 * @param p - the Panel with a CardLayout to change
+	 * @param s - the string identifying the card to change to
+	 */
 	public void switchToCard(JPanel p, String s){
 		CardLayout layout = (CardLayout) p.getLayout();
 		layout.show(p, s);

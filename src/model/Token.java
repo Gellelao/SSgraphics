@@ -46,6 +46,9 @@ public class Token{
 		return image;
 	}
 
+	/**
+	 * Moves the layout list around clockwise, so the Token rotates
+	 */
 	public void rotate() {
 		ArrayList<Integer> temp = new ArrayList<Integer>();
 		temp.add(layout.get(3));
@@ -69,7 +72,10 @@ public class Token{
 		return this.name;
 	}
 
-	public Token copy() {
+	/**
+	 * @return a new Token with the same properties as this one
+	 */
+	public Token clone() {
 		return new Token(name, layout.get(0), layout.get(1), layout.get(2), layout.get(3));
 	}
 }

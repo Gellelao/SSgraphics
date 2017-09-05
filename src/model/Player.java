@@ -13,7 +13,6 @@ public class Player{
 	public String name;
 	private List<String> available;
 	private List<String> played;
-	private List<String> cemetery;
 	private List<String> changedPieces;
 
 	private int spawnX;
@@ -30,7 +29,7 @@ public class Player{
 		// This list is cleared at the start of each turn
 		changedPieces = new ArrayList<String>();
 
-		// Change spawn coords and PieceToken type depending on which player this is
+		// Change spawn coords and Token names depending on which player this is
 		if(name.equals("1")){
 			spawnX = 2;
 			spawnY = 2;

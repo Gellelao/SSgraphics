@@ -9,13 +9,17 @@ import src.model.Player;
 /**
  * The 'Model' part of MVC.
  * Class that takes care of the 2d array of tokens called the board
- * This class is responsible for moving tokens around, drawing the board, and undoing the board
+ * This class is responsible for creating and moving tokens around, undoing the board, and storing players and the cemetery.
+ * An object of this class can be asked for information about either of the players, which player
+ * is taking their turn, and information about the board or cemetery
  *
  * @author Deacon
  *
  */
 public class Board extends Observable{
 	private Token[][] board;
+	// Maps Token names to the Tokens themselves. This way other classes only need to deal with names.
+	// This is possible because each token has a unique name (Letters a-x for player 1, letters A-X for player 2)
 	private HashMap<String, Token> pieceNames;
 	private Stack<Token[][]> history;
 	private Stack<ArrayList<String>> cmHistory;
@@ -36,19 +40,18 @@ public class Board extends Observable{
 
 		one = new Player("1");
 		two = new Player("2");
-		//addToken(one, 1, 1);
-		//addToken(two, 8, 8);
-
 		current = one;
 
+		// I hid the huge wall of token initializations at the bottom
 		initialiseMap();
 	}
 
-	public Token[][] getBoard(){return board;}
-
-	public Player getP1() {return one;}
-	public Player getP2() {return two;}
-
+	/**
+	 * Gets the Tokens that a given player has yet to play, in a 2D array format
+	 * 
+	 * @param p - the player to get Tokens from
+	 * @return - a 2D array of that player's available Tokens
+	 */
 	public Token[][] getAvailable(Player p) {
 		ArrayList<String> names = (ArrayList<String>) p.getAvailable();
 		String[][] nameArray = ListToGrid(names, 3, 8);
@@ -56,78 +59,22 @@ public class Board extends Observable{
 		return tokens;
 	}
 
-	public Token[][] getCemetery() {
-		String[][] nameArray = ListToGrid(cemetery, 14, 4);
-		Token[][] tokens = namesToTokens(nameArray);
-		return tokens;
-	}
-
-	public Player getCurrent() {
-		return current;
-	}
-
-	public void switchCurrent() {
-		if(current.equals(one)) {    // TODO: if problems with player turns not switching, might be because this equals isn't comparing correctly
-			current = two;
-		}
-		else current = one;
-		one.clearChangedPieces();
-		two.clearChangedPieces();
-	}
-
-	public String popCommandHistory(){
-		if(commandHistory.isEmpty())return null;
-		return commandHistory.pop();
-	}
-
-	public void pushCommandHistory(String s){
-		commandHistory.push(s);
-	}
-
-	public int cemeterySize() {return cemetery.size();}
-
 	/**
-	 * Converts a list of strings into an array of string with the given height and width
-	 *
-	 * @param list
-	 * @param height
-	 * @param width
-	 * @return
+	 * Gets all possible(4) rotations of Token t
+	 * 
+	 * @param t - the token to rotate
+	 * @return - an array of the rotations
 	 */
-	private String[][] ListToGrid(ArrayList<String> list, int height, int width){
-		String[][] grid = new String[height][width];
-		int cumulative = 0;
-		for(int i = 0; i < height; i++) {
-			for(int j = 0; j < width; j++) {
-				if(cumulative < list.size())
-					grid[i][j] = list.get(cumulative);
-				cumulative++;
-			}
-		}
-		return grid;
-	}
-
-	private Token[][] namesToTokens(String[][] names){
-		Token[][] tokens = new Token[names.length][names[0].length];
-		// convert the token names into actual tokens
-		for(int i = 0; i < names.length; i++) {
-			for(int j = 0; j < names[0].length; j++) {
-				tokens[i][j] = pieceNames.get(names[i][j]);
-			}
-		}
-		return tokens;
-	}
-
 	public Token[][] getRotations(Token t){
 		Token[][] rotations = new Token[4][1];
 		rotations[0][0] = t;
-		Token t2 = t.copy();
+		Token t2 = t.clone();
 		t2.rotate();
 		rotations[1][0] = t2;
-		Token t3 = t2.copy();
+		Token t3 = t2.clone();
 		t3.rotate();
 		rotations[2][0] = t3;
-		Token t4 = t3.copy();
+		Token t4 = t3.clone();
 		t4.rotate();
 		rotations[3][0] = t4;
 /*		for(int i = 0; i < 4; i++){
@@ -137,21 +84,12 @@ public class Board extends Observable{
 		return rotations;
 	}
 
-	public void notifyObs(){
-		setChanged();
-    	notifyObservers();
-	}
-
-	public boolean currentSpawnOccupied() {
-		return board[current.getSpawnX()][current.getSpawnY()] != null;
-	}
-
 	/**
 	 * Is provided with a token and puts it into the board
 	 * Automatically creates in the spawn tile of the current player
 	 * so does not need creation coordinates
 	 *
-	 * @param t token
+	 * @param t - the token to spawn
 	 */
 	public void spawnToken(Token t) {
 		if(!currentSpawnOccupied()){
@@ -163,45 +101,7 @@ public class Board extends Observable{
 	    	notifyObs();
 		}
 	}
-
-	/**
-	 * Is provided with a token and puts it into the board
-	 * Does not draw the board afterwards because this is currently only used by
-	 * the TextUI class which provides players to add
-	 *
-	 * @param t token
-	 * @param x
-	 * @param y
-	 */
-	public void addToken(Token t, int x, int y) {
-		board[x][y] = t;
-	}
-
-	/**
-	 * Is given the name of a token rather than a token object
-	 * Fetches the actual token that matches this name and put it into the board
-	 * Redraws the board afterwards
-	 *
-	 * The player class uses this the most so that players don't store lists of tokens -
-	 * just their names instead
-	 *
-	 * @param name name of token
-	 * @param x
-	 * @param y
-	 */
-	public void addToken(String name, int x, int y) {
-		Token p = pieceNames.get(name);
-		p.setToDefault();
-		board[x][y] = p;
-	}
-
-	public void rotateToken(String name, int angle) {
-		Token t = getToken(name);
-		for(int i = 0; i < angle/90; i++) {
-			t.rotate();
-		}
-	}
-
+	
 	/**
 	 * Move the given token in the given direction, making sure to push other tokens ahead,
 	 * and to send tokens to the cemetery if they go into forbidden zones
@@ -212,7 +112,6 @@ public class Board extends Observable{
 	public void moveToken(String name, String dir) {
 		int row = getTokenRow(name);
 		int col = getTokenCol(name);
-		//System.out.println("moving "+ dir);
 
 		switch(dir){
 		case("up"):
@@ -272,7 +171,7 @@ public class Board extends Observable{
 		for(int i = 0; i < 2; i++) {
 			for(int j = 0; j < 2; j++) {
 				if(board[i][j] != null && !board[i][j].toString().equals("1")){
-					cemetery.add(board[i][j].toString());// Remove this line for a different set of bugs
+					cemetery.add(board[i][j].toString());
 					board[i][j] = null;
 				}
 			}
@@ -280,26 +179,64 @@ public class Board extends Observable{
 		for(int i = 8; i < 10; i++) {
 			for(int j = 8; j < 10; j++) {
 				if(board[i][j] != null && !board[i][j].toString().equals("2")){
-					cemetery.add(board[i][j].toString());// Remove this line for a different set of bugs
+					cemetery.add(board[i][j].toString());
 					board[i][j] = null;
 				}
 			}
 		}
 
+		// This tells the view to redraw (I believe)
 		notifyObs();
 	}
 
-	public void printCemetery(){
-		String[][] names = new String[5][10];
-		String message = " ________\n/Cemetery\\";
-		int cumulative = 0;
-		for(int i = 0; i < 5; i++) {
-			for(int j = 0; j < 10; j++) {
-				if(cumulative < cemetery.size())
-					names[i][j] = cemetery.get(cumulative);
-				cumulative++;
-			}
+	public Token[][] getBoard(){return board;}
+	public Player getP1() {return one;}
+	public Player getP2() {return two;}
+	public Player getCurrent() {return current;}
+
+	/**
+	 * @return - the cemetery, in 2D array form
+	 */
+	public Token[][] getCemetery() {
+		String[][] nameArray = ListToGrid(cemetery, 14, 4);
+		Token[][] tokens = namesToTokens(nameArray);
+		return tokens;
+	}
+
+	public int cemeterySize() {return cemetery.size();}
+
+	/**
+	 * @return true if the spawn tile of the current player is occupied, otherwise false
+	 */
+	public boolean currentSpawnOccupied() {
+		return board[current.getSpawnX()][current.getSpawnY()] != null;
+	}
+
+	/**
+	 * Changes the current player
+	 */
+	public void switchCurrent() {
+		if(current.equals(one)) {
+			current = two;
 		}
+		else current = one;
+		one.clearChangedPieces();
+		two.clearChangedPieces();
+	}
+
+	/**
+	 * @return - the top of the commandHistory stack, or null if the stack is empty
+	 */
+	public String popCommandHistory(){
+		if(commandHistory.isEmpty())return null;
+		return commandHistory.pop();
+	}
+
+	/**
+	 * @param s - the string to push onto the commandHistory
+	 */
+	public void pushCommandHistory(String s){
+		commandHistory.push(s);
 	}
 
 	/**
@@ -310,7 +247,7 @@ public class Board extends Observable{
 		for(int i = 0; i < board.length; i++) {
 			for(int j = 0; j < board[0].length; j++) {
 				if(board[i][j] != null)
-					temp[i][j] = board[i][j].copy();
+					temp[i][j] = board[i][j].clone();
 			}
 		}
 		history.push(temp);
@@ -320,8 +257,6 @@ public class Board extends Observable{
 	/**
 	 * Pop the latest copy of the board off the history stack
 	 * and replace the current board with that
-	 *
-	 * @return returns true if success, false if history is empty
 	 */
 	public void undo() {
 		if(cmHistory.isEmpty())return;
@@ -332,28 +267,18 @@ public class Board extends Observable{
 		Token[][] latestSave = history.pop();
 		for(int i = 0; i < latestSave.length; i++) {
 			for(int j = 0; j < latestSave[0].length; j++) {
-
-				/*if(latestSave[i][j] == null)board[i][j] = null;
-				else board[i][j] = latestSave[i][j].copy();*/
-
 				board[i][j] = latestSave[i][j];
 			}
 		}
 		notifyObs();
 	}
 
-	public Token getToken(int x, int y){
-		return board[x][y];
-	}
-
-	public Token getToken(String name){
-		for(int i = 0; i < board.length; i++) {
-			for(int j = 0; j < board[0].length; j++) {
-				if(board[i][j] != null && board[i][j].toString().equals(name))return board[i][j];
-			}
-		}
-		System.out.println("getToken() has not found piece \"" + name + "\"");
-		return null;
+	/**
+	 * Notifies observers and calls setChanged()
+	 */
+	public void notifyObs(){
+		setChanged();
+    	notifyObservers();
 	}
 
 	public int getTokenRow(String name){
@@ -374,6 +299,44 @@ public class Board extends Observable{
 		}
 		System.out.println("getTokenCol() has not found piece \"" + name + "\"");
 		return -1;
+	}
+
+	/**
+	 * Converts a list of strings into an array of string with the given height and width
+	 *
+	 * @param list - the list of string to convert
+	 * @param height - the height of the array
+	 * @param width - the width of the array
+	 * @return - the 2D array of Strings created form the list
+	 */
+	private String[][] ListToGrid(ArrayList<String> list, int height, int width){
+		String[][] grid = new String[height][width];
+		int cumulative = 0;
+		for(int i = 0; i < height; i++) {
+			for(int j = 0; j < width; j++) {
+				if(cumulative < list.size())
+					grid[i][j] = list.get(cumulative);
+				cumulative++;
+			}
+		}
+		return grid;
+	}
+	
+	/**
+	 * Converts a 2D array of String into a 2D array of Tokens, using the strings as Token names
+	 * 
+	 * @param names - the array of strings to convert
+	 * @return - the array of Tokens
+	 */
+	private Token[][] namesToTokens(String[][] names){
+		Token[][] tokens = new Token[names.length][names[0].length];
+		// convert the token names into actual tokens
+		for(int i = 0; i < names.length; i++) {
+			for(int j = 0; j < names[0].length; j++) {
+				tokens[i][j] = pieceNames.get(names[i][j]);
+			}
+		}
+		return tokens;
 	}
 
 	private void initialiseMap() {

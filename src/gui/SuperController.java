@@ -269,8 +269,8 @@ public class SuperController {
 	public void undo(){
 		stats.undo();
 		
-		// If in create phase
-		if(phase == 0){
+		// If in create phase and if there is something to undo
+		if(phase == 0 && myModel.popCommandHistory() != null){
 			// Change to move phase of previous turn
 			phase = 1;
 			myModel.switchCurrent();
