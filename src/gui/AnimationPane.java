@@ -120,21 +120,13 @@ public class AnimationPane extends AbstractGamePanel{
 			setTarget(currentX, currentY-currentSize);
 			return;
 		case "down":
-			System.out.println("CurrentX: " + currentX + ", TargetX: " + targetX);
-			System.out.println("CurrentY: " + currentY + ", TargetY: " + targetY);
 			setTarget(currentX, currentY+currentSize);
-			System.out.println("After");
-			System.out.println("CurrentX: " + currentX + ", TargetX: " + targetX);
-			System.out.println("CurrentY: " + currentY + ", TargetY: " + targetY);
 			return;
 		case "left":
 			setTarget(currentX-currentSize, currentY);
 			return;
 		case "right":
-			System.out.println("Current: " + currentX + ", Target: " + targetX);
 			setTarget(currentX+currentSize, currentY);
-			System.out.println("After");
-			System.out.println("Current: " + currentX + ", Target: " + targetX);
 			return;
 		}
 	}
@@ -145,23 +137,9 @@ public class AnimationPane extends AbstractGamePanel{
 	}
 
 	// These methods are not used by this panel, because this only needs to draw tokens
-	@Override
-	protected Color getBGColour() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected Controller getController() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void addRegion(TokenRegion r) {
-		// TODO Auto-generated method stub
-		
-	}
+	protected Color getBGColour() {return null;}
+	protected Controller getController() {return null;}
+	public void addRegion(TokenRegion r) {}
 	
 	public Dimension getPreferredSize() {return new Dimension(screenWidth, screenHeight);} // TODO: Change these back to variables
 }

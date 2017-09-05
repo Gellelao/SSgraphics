@@ -18,13 +18,14 @@ public class BoardPanel extends AbstractGamePanel {
 	private Board myModel;
 	private BoardPanelController control;
 	private ArrayList<TokenRegion> regions;
-	String message = "Welcome";
+	String message;
 
 	public BoardPanel(Board model){
 		myModel = model;
-		control = new BoardPanelController(myModel, this);
+		control = new BoardPanelController(this);
 		regions = new ArrayList<TokenRegion>();
 
+		// Add a BoardPanelController as the key and mouse listeners
 		this.addKeyListener(control);
 		this.addMouseListener(control);
 		this.setFocusable(true);
@@ -179,8 +180,4 @@ public class BoardPanel extends AbstractGamePanel {
 		if(r.getToken().toString().matches("[a-xA-X]"))
 			regions.add(r);
 	}
-
-
-
-
 }

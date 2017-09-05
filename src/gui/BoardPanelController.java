@@ -18,12 +18,16 @@ public class BoardPanelController implements Controller, KeyListener, MouseListe
 	private BoardPanel panel;
 	private SuperController superC;
 
-	public BoardPanelController(Board board, BoardPanel panel) {
+	public BoardPanelController(BoardPanel panel) {
 		this.panel = panel;
 	}
 
 	public void keyPressed(KeyEvent e) {}
 	public void keyReleased(KeyEvent e) {}
+	
+	/**
+	 * Calls the move method of the superController, providing the appropriate direction
+	 */
 	public void keyTyped(KeyEvent e) {
 		switch (e.getKeyChar()) {
 		case 'w': superC.moveSelected("up"); return;
@@ -42,6 +46,11 @@ public class BoardPanelController implements Controller, KeyListener, MouseListe
 		return panel;
 	}
 
+	/**
+	 * Passes and passes a string identifying the edge a user has clicked on and the TokenRegions they have clicked
+	 * to the superController, which processes that information before calling its own move method
+	 * If the user has not clicked an edge, the r.checkSubregions() method will return null, and that is handled by the superController
+	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		int mouseX = e.getX();

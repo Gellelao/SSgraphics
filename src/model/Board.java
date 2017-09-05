@@ -7,6 +7,7 @@ import java.util.Stack;
 import src.model.Player;
 
 /**
+ * The 'Model' part of MVC.
  * Class that takes care of the 2d array of tokens called the board
  * This class is responsible for moving tokens around, drawing the board, and undoing the board
  *

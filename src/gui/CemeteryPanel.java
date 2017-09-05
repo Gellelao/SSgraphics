@@ -7,9 +7,16 @@ import java.awt.Graphics2D;
 import src.model.Board;
 import src.model.Player;
 
+/**
+ * Panel to represent the cemetery of the game
+ * The cemetery contains pieces of both players, so only one cemetery is required
+ * 
+ * @author Deacon
+ *
+ */
 public class CemeteryPanel extends AbstractGamePanel{
 	private static final long serialVersionUID = 1L;
-	private Player player;
+
 	private Board myModel;
 
 	public CemeteryPanel(Board model) {
@@ -26,12 +33,13 @@ public class CemeteryPanel extends AbstractGamePanel{
 	protected void drawAll(Graphics2D g) {
 		g.setColor(getBGColour());
 		g.fillRect(0, 0, getWidth(), getHeight());
+		// Main point of difference: this panel draws "myModel.getCemetery()" as its grid
 		super.drawGrid(g, myModel.getCemetery());
 	}
 
 	@Override
 	protected Controller getController() {
-		System.out.println("getController() method of CemeteryPanel should not be called/should do nothing. Returned null");
+		// The cemetery does not need a controller, because it is not interacted with
 		return null;
 	}
 

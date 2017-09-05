@@ -8,13 +8,18 @@ import java.awt.event.MouseListener;
 import src.model.Board;
 import src.model.Token;
 
+/**
+ * Implementation of the Controller interface intended for responding to user actions on
+ * the TokenSelectionPanel panels. Those panels are controlled exclusively with the mouse
+ * 
+ * @author Deacon
+ *
+ */
 public class TokenSelectionPanelController implements Controller, KeyListener, MouseListener{
-	private Board myModel;
 	private TokenSelectionPanel panel;
 	private SuperController superC;
 
-	public TokenSelectionPanelController(Board board, TokenSelectionPanel panel) {
-		myModel = board;
+	public TokenSelectionPanelController(TokenSelectionPanel panel) {
 		this.panel = panel;
 	}
 	
@@ -35,50 +40,15 @@ public class TokenSelectionPanelController implements Controller, KeyListener, M
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void keyPressed(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void keyReleased(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void keyTyped(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void setSuper(SuperController s) {
 		this.superC = s;
 	}
 
+	public void mousePressed(MouseEvent e) {}
+	public void mouseReleased(MouseEvent e) {}
+	public void mouseEntered(MouseEvent e) {}
+	public void mouseExited(MouseEvent e) {}
+	public void keyTyped(KeyEvent e) {}
+	public void keyPressed(KeyEvent e) {}
+	public void keyReleased(KeyEvent e) {}
 }

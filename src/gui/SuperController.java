@@ -1,13 +1,18 @@
 package src.gui;
 
-import java.awt.Color;
-
 import javax.swing.JOptionPane;
-
 import src.model.Board;
 import src.model.Player;
 import src.model.Token;
 
+/**
+ * The 'Controller' part of MVC.
+ * This is the class which interprets user actions into game actions.
+ * It is sent information about user clicks or key presses by its Controller fields
+ * 
+ * @author Deacon
+ *
+ */
 public class SuperController {
 	Board myModel;
 	View view;
@@ -16,10 +21,11 @@ public class SuperController {
 	Controller p2Control;
 	Controller s1Control;
 	Controller s2Control;
-	BoardPanel b;
+
 	int phase; // 0 = create, 1 = move
 	Token selected = null;
 	
+	// Accessories
 	SoundSystem beeper;
 	StatTracker stats;
 	AnimationPane animations;
@@ -46,10 +52,6 @@ public class SuperController {
 		updateMessage();
 	}
 
-	public Token getSelected() {
-		return selected;
-	}
-
 	/**
 	 * Called by the boardPanel's controller when the player clicks on a token
 	 * Takes a TokenRegion parameter because, like the "selectRotation()" method below, this is method
@@ -63,24 +65,32 @@ public class SuperController {
 	public void boardSelect(TokenRegion r, String edge) {
 		Token t = r.getToken();
 		if(t == null)return;
+		
+		// If the user has clicked an edge, move in that direction
 		if(t.equals(selected)){
 			if(edge != null)moveSelected(edge);
 		}
 
+		// Animations start
 		int x = p1Control.getPanel().getWidth() + r.getX();
 		int y = boardControl.getPanel().getRealY() + r.getY();
 		
 		animations.setCurrent(x, y, r.getSize(), r.getToken());
+		// Animations end
 		
+		// If the user has not clicked an edge, attempt to select that token.
+		// The token will only be selected if it belong to the player taking their turn
 		Character c = t.toString().charAt(0);
 		if(Character.isUpperCase(c)) {
 			if(myModel.getCurrent().toString().equals("1")) {
 				selected = t;
 			}
+			else beeper.playBeep();
 		}
 		else if(myModel.getCurrent().toString().equals("2")) {
 			selected = t;
 		}
+		else beeper.playBeep();
 	}
 
 	/**
@@ -92,9 +102,11 @@ public class SuperController {
 	 */
 	public void playerSelect(Token t, Player p){
 		if(phase != 0){
+			beeper.playBeep();
 			System.out.println("Not the correct phase");
 			return;
 		}
+		// Warn the player about their mistake
 		if(myModel.currentSpawnOccupied()) {
 			System.out.println("Your spawn tile is occupied");
 			beeper.increaseError();
@@ -108,15 +120,21 @@ public class SuperController {
 		}
 		// If the player who owns the clicked token is the player taking their turn, continue.
 		if(p.toString().equals(myModel.getCurrent().toString())){
-			// Animated the current player's panel:
+			
+			// Animate the current player's panel:
 			if(p.toString().equals("1"))p1Control.getPanel().shiftDown();
 			else p2Control.getPanel().shiftDown();
-			// Animating finished
+			// Animation ends
+			
 			selected = null;
+			// Switch to a panel with which the player can select a token rotation
 			view.setSelectionPanelToken(t, p.toString());
 			view.switchPlayerCard("Card with the four rotations of a token", p.toString());
 		}
-		else System.out.println("You can only click your pieces");
+		else {
+			beeper.playBeep();
+			System.out.println("You can only click your pieces");
+		}
 	}
 	
 	/**
@@ -129,10 +147,11 @@ public class SuperController {
 	 * stores the token itself.
 	 */
 	public void selectRotation(TokenRegion r){
+		// Before spawning anything, save the state and remember the last command
 		myModel.saveState();
 		myModel.pushCommandHistory("create");
 		
-		// Animation Stuff starts
+		// Animations start
 		AbstractGamePanel toAnimate;
 		
 		Character c = r.getToken().toString().charAt(0);
@@ -159,7 +178,7 @@ public class SuperController {
 		animations.animate();
 		
 		toAnimate.shiftDown();
-		// Animation stuff ends
+		// Animations end
 		
 		myModel.spawnToken(r.getToken());
 		
@@ -167,22 +186,34 @@ public class SuperController {
 		updateMessage();
 	}
 
+	/**
+	 * Changes the little message above the board to read who's turn it is and what phase they are in
+	 */
 	public void updateMessage() {
 		String playerName;
 		String phaseName;
 		if(myModel.getCurrent().toString().equals("1")) playerName = "Yellow";
 			else playerName = "Green";
+		
 		if(phase == 0)phaseName = "Create";
 			else phaseName = "Move";
 
 		BoardPanel b = (BoardPanel)boardControl.getPanel();
 		b.setMessage(playerName + "'s turn, " + phaseName + " phase.");
+		// Redraw
 		myModel.notifyObs();
 	}
 
+	/**
+	 * Tells the model to move the selected token in the direction provided. The selected token is kept
+	 * track of using a field in this class.
+	 * 
+	 * @param direction
+	 */
 	public void moveSelected(String direction){
 		if(selected == null)return;
 		String name = selected.toString();
+		
 		if(phase != 1){
 			System.out.println("Not the correct phase");
 			return;
@@ -191,6 +222,8 @@ public class SuperController {
 			System.out.println("You have already changed that piece");
 			return;
 		}
+		
+		// Save state and remember last command before changing the board
 		myModel.saveState();
 		myModel.pushCommandHistory("move");
 		
@@ -199,68 +232,92 @@ public class SuperController {
 		animations.animate();
 		// ANimation stuff ends
 		
+		// Move the token and update the current player so that their information is correct
 		myModel.moveToken(name, direction);
 		myModel.getCurrent().changePiece(name);
+		
+		// Update the statistics and the message
 		stats.move(1);
 		updateMessage();
 	}
 
+	/**
+	 * Called whenever the 'pass' button is clicked. Increments the phase, or changes to the next turn
+	 * if passing would end the current turn
+	 */
 	public void pass(){
+		// Reset the error system
 		view.setPassToShiny(false);
 		beeper.resetError();
-		System.out.println("pass");
+
 		phase++;
 		if(phase > 1){
 			myModel.switchCurrent();
 			phase = 0;
 		}
+		
+		// Update and redraw
 		updateMessage();
 		myModel.notifyObs();
 	}
-	
-	public void setAnimations(AnimationPane anim){
-		this.animations = anim;
-	}
-
-	public void setSidesToDefault(){
-		view.switchPlayerCard("Card with all of a player's tokens", "1");
-		view.switchPlayerCard("Card with all of a player's tokens", "2");
-	}
-	
-	public StatTracker getStats() {return stats;}
 
 	/**
-	 * Calls the board undo method, and reverts the players lists to be accurate to the previous board state
-	 *
-	 * @return return the string describing the last action taken, so that the parser knows what to do next
+	 * Calls the model's undo method, and reverts the players lists to be accurate to the previous board state
+	 * Also attempts to change back to the previous turn if undo is clicked at the start of a turn 
+	 * 
 	 */
 	public void undo(){
 		stats.undo();
 		
+		// If in create phase
 		if(phase == 0){
+			// Change to move phase of previous turn
 			phase = 1;
 			myModel.switchCurrent();
 			updateMessage();
 			return;
 		}
-		
 		myModel.undo();
 
 		String lastCommand = myModel.popCommandHistory();
 		if(lastCommand == null)return;
 		switch(lastCommand){
+		
+		// If undoing a create, switch to the create phase
 		case "create":
 			myModel.getCurrent().undoCreate();
 			phase = 0;
 			break;
+			
+		// If undoing a move, update decrease the amount of moves in the statistics
 		case "move":
 			stats.move(-1);
 			myModel.getCurrent().undoChanges();
 			break;
+			
+		// Rotations currently not supported during turns
 		case "rotate":
 			myModel.getCurrent().undoChanges();
 			break;
 		}
 		updateMessage();
 	}
+
+	/**
+	 *  Makes the side panels both show the players tokens, rather than the four rotations panel
+	 */
+	public void setSidesToDefault(){
+		view.switchPlayerCard("Card with all of a player's tokens", "1");
+		view.switchPlayerCard("Card with all of a player's tokens", "2");
+	}
+	
+	public void setAnimations(AnimationPane anim){
+		this.animations = anim;
+	}
+
+	public Token getSelected() {
+		return selected;
+	}
+	
+	public StatTracker getStats() {return stats;}
 }

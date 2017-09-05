@@ -15,12 +15,14 @@ import src.model.Token;
  */
 public abstract class AbstractGamePanel extends JPanel{
 	private static final long serialVersionUID = 1L;
+	
 	int borderWeight;
 	int tokenSize;
 
 	int realX;
 	int realY;
 	
+	// Fields used for animating this panel
 	int currentY;
 	boolean moving = false;
 
@@ -66,10 +68,6 @@ public abstract class AbstractGamePanel extends JPanel{
 				applyRules(g, i, j, x, y);
 			}
 		}
-	}
-	
-	private void anchorCurrentY(){
-		currentY = realY;
 	}
 	
 	// These are used the find out where to draw the "flying" tokens when animating
@@ -171,17 +169,24 @@ public abstract class AbstractGamePanel extends JPanel{
 		}
 	}
 	
+	/**
+	 * Animates this panel, making it slide down off the bottom of the screen
+	 */
 	protected void shiftDown(){
 		anchorCurrentY();
 		moving = true;
-		int acc = 1;
 		while(currentY < this.getHeight()){
-			//System.out.println(this.getHeight());
-			currentY += acc;
-			acc+=0.2;
+			currentY += 4;
 			paintImmediately(0,0, getWidth(), getHeight());
 		}
 		moving = false;
+	}
+	
+	/**
+	 * Resets the currentY to be the default position of the grid
+	 */
+	private void anchorCurrentY(){
+		currentY = realY;
 	}
 
 	public void paintComponent(Graphics _g) {

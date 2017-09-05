@@ -24,13 +24,22 @@ import src.model.Board;
 import src.model.Token;
 import src.model.Token;
 
+/**
+ * The 'View' part of the MVC system.
+ * This constructs all the required panels and arranges them. It creates all the menu buttons
+ * and sets their actions. It also deals with switching between panels, using CardLayouts
+ * 
+ * @author Deacon
+ *
+ */
 public class View extends JFrame implements Observer{
 	private static final long serialVersionUID = 1L;
+	
 	private Board myModel;
-	//private JFrame current;
 	private JPanel cards;
 	private JPanel p1;
 	private JPanel p2;
+	
 	final static String MENUPANEL = "Card with menu buttons";
 	final static String GAMEPANEL = "Card with the game contents";
 	final static String PLAYERTOKENPANEL = "Card with all of a player's tokens";
@@ -44,47 +53,54 @@ public class View extends JFrame implements Observer{
 	private TokenSelectionPanel selectionPanel2;
 	private JButton pass;
 
-	String message = "Welcome";
-
 	public View(Board board) {
 
 		myModel = board;
 		myModel.addObserver(this);
 
-		// "current" is the single JFrame that this program uses
-		//current = new JFrame("Sword and Shield Game");
-		//current.setFocusable(false);
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		this.setBounds(0, 0, screenWidth, screenHeight);
 
+		// Cards is a panel containing the 'menu' and 'game' cards, which are switched between when needed.
 		cards = new JPanel(new CardLayout());
 		cards.setFocusable(false);
 
 		// Make the menu panel
 		JPanel menuPanel = new JPanel(new BorderLayout());
 		JPanel menuButtons = new JPanel();
+		
+		// Make the 'Play' button
 		JButton play = new JButton("Begin New Game");
-			play.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					switchToCard(cards, GAMEPANEL);
-				}});
-			play.setFocusable(false);
+		play.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				switchToCard(cards, GAMEPANEL);
+			}});
+		play.setFocusable(false);
+		
+		// Make the 'Info' button
 		JButton info = new JButton("Info");
-			info.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					JOptionPane.showMessageDialog(null, "Made by Deacon McIntyre, 2017");
-				}});
-			info.setFocusable(false);
+		info.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(null, "Made by Deacon McIntyre, 2017");
+			}});
+		info.setFocusable(false);
+		
+		// Make the 'Quit' button
 		JButton quit = new JButton("Quit");
-			quit.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					System.exit(1);
-				}});
-			quit.setFocusable(false);
+		quit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(1);
+			}});
+		quit.setFocusable(false);
+		
+		// Add the buttons to a subpanel
 		menuButtons.add(play);
 		menuButtons.add(info);
 		menuButtons.add(quit);
+		// Add the subpanel to the menu
 		menuPanel.add(menuButtons, BorderLayout.NORTH);
+		
+		// Add the game title to the menu
 		menuPanel.add(new JLabel("Sword and Shield Game", JLabel.CENTER), BorderLayout.CENTER);
 
 		menuButtons.setFocusable(false);
@@ -222,28 +238,10 @@ public class View extends JFrame implements Observer{
 		}
 	}
 
-/*	public void setSelectionPanelToken1(Token t){
-		selectionPanel1.setTokenToDraw(t);
-	}
-
-	public void setSelectionPanelToken2(Token t){
-		selectionPanel2.setTokenToDraw(t);
-	}*/
-
 	public void switchToCard(JPanel p, String s){
 		CardLayout layout = (CardLayout) p.getLayout();
 		layout.show(p, s);
 	}
-
-/*	public void switchP1Card(String s){
-		CardLayout layout = (CardLayout) p1.getLayout();
-		layout.show(p1, s);
-	}
-
-	public void switchP2Card(String s){
-		CardLayout layout = (CardLayout) p2.getLayout();
-		layout.show(p2, s);
-	}*/
 
 	public Dimension getPreferredSize() {return new Dimension(screenWidth, screenHeight);}   //0, 0);}
 	public void update(Observable arg0, Object arg1) {repaint();}
