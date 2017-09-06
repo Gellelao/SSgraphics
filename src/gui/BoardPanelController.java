@@ -3,9 +3,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Stack;
 
-import src.model.Board;
 import src.model.Token;
 
 /**
@@ -57,7 +55,6 @@ public class BoardPanelController implements Controller, KeyListener, MouseListe
 	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		System.out.println(e.getX() + ", " + e.getY());
 		processClick(e.getX(), e.getY());
 	}
 	

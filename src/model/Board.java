@@ -283,7 +283,6 @@ public class Board extends Observable{
 				if(board[i][j] != null && board[i][j].toString().equals(name))return i;
 			}
 		}
-		System.out.println("getTokenRow() has not found piece \"" + name + "\"");
 		return -1;
 	}
 
@@ -293,7 +292,6 @@ public class Board extends Observable{
 				if(board[i][j] != null && board[i][j].toString().equals(name))return j;
 			}
 		}
-		System.out.println("getTokenCol() has not found piece \"" + name + "\"");
 		return -1;
 	}
 

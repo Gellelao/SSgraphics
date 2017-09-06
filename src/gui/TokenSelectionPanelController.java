@@ -1,12 +1,7 @@
 package src.gui;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
-import src.model.Board;
-import src.model.Token;
 
 /**
  * Implementation of the Controller interface intended for responding to user actions on

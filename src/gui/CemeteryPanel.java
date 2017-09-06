@@ -1,11 +1,9 @@
 package src.gui;
 
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 import src.model.Board;
-import src.model.Player;
 
 /**
  * Panel to represent the cemetery of the game

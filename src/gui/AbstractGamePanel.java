@@ -50,6 +50,7 @@ public abstract class AbstractGamePanel extends JPanel{
 
 		// Draw the board grid background (This results in the black borders)
 		g.setColor(Color.BLACK);
+		// The 'moving' boolean is used by the sliding animation, which means a different 'y' location is used
 		if(moving) g.fillRect(realX, currentY, boardWidth, boardHeight);
 		else g.fillRect(realX, realY, boardWidth, boardHeight);
 		
@@ -63,8 +64,8 @@ public abstract class AbstractGamePanel extends JPanel{
 
 				// Add "tokenRegions" to make click detection easier
 				addRegion(new TokenRegion(grid[i][j], x, y, tokenSize));
-				// Rules differ between panels - the board is the biggest difference as it has to draw
-				// Different coloured tiles
+				
+				// Rules differ between panels - the board is the biggest difference as it has to draw different coloured tiles
 				applyRules(g, i, j, x, y);
 			}
 		}

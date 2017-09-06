@@ -1,11 +1,7 @@
 package src.gui;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Stack;
 
-import src.model.Board;
 import src.model.Token;
 
 /**
