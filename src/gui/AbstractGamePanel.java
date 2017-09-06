@@ -145,7 +145,7 @@ public abstract class AbstractGamePanel extends JPanel{
 
 	protected abstract Color getBGColour();
 
-	protected abstract Controller getController();
+	public abstract Controller getController();
 	
 	public abstract void addRegion(TokenRegion r);
 

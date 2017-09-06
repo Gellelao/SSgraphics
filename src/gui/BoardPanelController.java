@@ -47,21 +47,31 @@ public class BoardPanelController implements Controller, KeyListener, MouseListe
 	}
 
 	/**
-	 * Passes and passes a string identifying the edge a user has clicked on and the TokenRegions they have clicked
+	 * Passes a string identifying the edge a user has clicked on and the TokenRegions they have clicked
 	 * to the superController, which processes that information before calling its own move method
 	 * If the user has not clicked an edge, the r.checkSubregions() method will return null, and that is handled by the superController
 	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		int mouseX = e.getX();
-		int mouseY = e.getY();
-
-		TokenRegion r = panel.getRegion(mouseX, mouseY);
+		System.out.println(e.getX() + ", " + e.getY());
+		processClick(e.getX(), e.getY());
+	}
+	
+	/**
+	 * I've separated this code out from the mouseClicked method so that it can be called
+	 * externally (e.g from a test), without having to click the mouse
+	 * 
+	 * @param x
+	 * @param y
+	 */
+	@Override
+	public void processClick(int x, int y){
+		TokenRegion r = panel.getRegion(x, y);
 		if(r != null && r.getToken() != null) {
-			String edge = r.checkSubregions(mouseX, mouseY);
+			String edge = r.checkSubregions(x, y);
 			superC.boardSelect(r, edge);
 		}
-	}	
+	}
 	
 	@Override
 	public void setSuper(SuperController s) {

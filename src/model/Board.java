@@ -77,10 +77,6 @@ public class Board extends Observable{
 		Token t4 = t3.clone();
 		t4.rotate();
 		rotations[3][0] = t4;
-/*		for(int i = 0; i < 4; i++){
-			rotations[i][0] = t;
-			t.rotate();
-		}*/
 		return rotations;
 	}
 

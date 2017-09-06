@@ -34,11 +34,19 @@ import src.model.Token;
  */
 public class View extends JFrame implements Observer{
 	private static final long serialVersionUID = 1L;
-	
+
 	private Board myModel;
-	private JPanel cards;
-	private JPanel p1;
-	private JPanel p2;
+
+	// Unfortunately the simplest way I saw to test this program was to make these fields public so that tests can access them
+	public JPanel cards;
+	public JPanel p1;
+	public JPanel p2;
+	
+	public BoardPanel boardPanel;
+	public PlayerPanel playerPanel1;
+	public PlayerPanel playerPanel2;
+	public TokenSelectionPanel selectionPanel1;
+	public TokenSelectionPanel selectionPanel2;
 	
 	final static String MENUPANEL = "Card with menu buttons";
 	final static String GAMEPANEL = "Card with the game contents";
@@ -49,8 +57,7 @@ public class View extends JFrame implements Observer{
 	final static int screenHeight= java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height;
 
 	private SuperController supControl;
-	private TokenSelectionPanel selectionPanel1;
-	private TokenSelectionPanel selectionPanel2;
+	
 	private JButton pass;
 
 	public View(Board board) {
@@ -156,12 +163,13 @@ public class View extends JFrame implements Observer{
 
 		// Create the panels that make up the main game
 		// These use the classes that extend AbstractGamePanel
-		CemeteryPanel g1 =         new CemeteryPanel(myModel);
-		BoardPanel boardPanel =    new BoardPanel(myModel);
-		PlayerPanel playerPanel1 = new PlayerPanel(myModel, "p1");
-		PlayerPanel playerPanel2 = new PlayerPanel(myModel, "p2");
-		selectionPanel1 =          new TokenSelectionPanel(myModel, "p1");
-		selectionPanel2 =          new TokenSelectionPanel(myModel, "p2");
+		// I have made most of them public fields so that they can be accessed by tests - I'm aware this is not the best way to enable testing
+		CemeteryPanel g1 = new CemeteryPanel(myModel);
+		boardPanel =       new BoardPanel(myModel);
+		playerPanel1 =     new PlayerPanel(myModel, "p1");
+		playerPanel2 =     new PlayerPanel(myModel, "p2");
+		selectionPanel1 =  new TokenSelectionPanel(myModel, "p1");
+		selectionPanel2 =  new TokenSelectionPanel(myModel, "p2");
 
 		// The yellow and green panels on the side are both CardLayout panels,
 		// which contain a playerPanel and a TokenSelectionPanel
@@ -278,6 +286,13 @@ public class View extends JFrame implements Observer{
 		CardLayout layout = (CardLayout) p.getLayout();
 		layout.show(p, s);
 	}
+	
+	/**
+	 * I just needed access to this for tests
+	 * 
+	 * @return this program's one and only SuperController
+	 */
+	public SuperController getSuper(){return supControl;}
 
 	public Dimension getPreferredSize() {return new Dimension(screenWidth, screenHeight);}   //0, 0);}
 	public void update(Observable arg0, Object arg1) {repaint();}

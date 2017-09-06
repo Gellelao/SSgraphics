@@ -138,7 +138,7 @@ public class AnimationPane extends AbstractGamePanel{
 
 	// These methods are not used by this panel, because this only needs to draw tokens
 	protected Color getBGColour() {return null;}
-	protected Controller getController() {return null;}
+	public Controller getController() {return null;}
 	public void addRegion(TokenRegion r) {}
 	
 	public Dimension getPreferredSize() {return new Dimension(screenWidth, screenHeight);} // TODO: Change these back to variables

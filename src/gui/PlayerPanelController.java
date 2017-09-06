@@ -15,7 +15,7 @@ import src.model.Token;
  * @author Deacon
  *
  */
-public class PlayerPanelController implements Controller, KeyListener, MouseListener{
+public class PlayerPanelController implements Controller, MouseListener{
 	private PlayerPanel panel;
 	private SuperController superC;
 
@@ -25,9 +25,19 @@ public class PlayerPanelController implements Controller, KeyListener, MouseList
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		int mouseX = e.getX();
-		int mouseY = e.getY();
-		Token t = panel.getToken(mouseX, mouseY);
+		processClick(e.getX(), e.getY());
+	}
+	
+	/**
+	 * I've separated this code out from the mouseClicked method so that it can be called
+	 * externally (e.g from a test), without having to click the mouse
+	 * 
+	 * @param x
+	 * @param y
+	 */
+	@Override
+	public void processClick(int x, int y){
+		Token t = panel.getToken(x, y);
 		if(t != null){
 			superC.playerSelect(t, panel.getPlayer());
 		}
@@ -46,7 +56,4 @@ public class PlayerPanelController implements Controller, KeyListener, MouseList
 	public void mouseReleased(MouseEvent e) {}
 	public void mouseEntered(MouseEvent e) {}
 	public void mouseExited(MouseEvent e) {}
-	public void keyTyped(KeyEvent e) {}
-	public void keyPressed(KeyEvent e) {}
-	public void keyReleased(KeyEvent e) {}
 }

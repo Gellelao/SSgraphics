@@ -170,7 +170,7 @@ public class BoardPanel extends AbstractGamePanel {
 	}
 
 	@Override
-	protected Controller getController() {
+	public Controller getController() {
 		return control;
 	}
 

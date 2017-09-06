@@ -28,8 +28,7 @@ public class PlayerPanel extends AbstractGamePanel{
 		myModel = model;
 		control = new PlayerPanelController(this);
 
-		// Add a PlayerPanelController as the key and mouse listeners
-		this.addKeyListener(control);
+		// Add a PlayerPanelController as the mouse listener
 		this.addMouseListener(control);
 		this.setFocusable(false);
 
@@ -65,7 +64,7 @@ public class PlayerPanel extends AbstractGamePanel{
 	}
 
 	@Override
-	protected Controller getController() {
+	public Controller getController() {
 		return control;
 	}
 

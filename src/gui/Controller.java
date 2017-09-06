@@ -12,4 +12,5 @@ package src.gui;
 public interface Controller {
 	public AbstractGamePanel getPanel();
 	public void setSuper(SuperController s);
+	public void processClick(int x, int y);
 }

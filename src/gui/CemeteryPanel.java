@@ -38,7 +38,7 @@ public class CemeteryPanel extends AbstractGamePanel{
 	}
 
 	@Override
-	protected Controller getController() {
+	public Controller getController() {
 		// The cemetery does not need a controller, because it is not interacted with
 		return null;
 	}

@@ -170,9 +170,9 @@ public class SuperController {
 		// Luckily these numbers happened to be the player's names:                      |
 		int offset = Integer.parseInt(myModel.getCurrent().toString());//                v
 		
-		int y = boardControl.getPanel().getRealY() + (myModel.getCurrent().getSpawnY()+offset) * boardControl.getPanel().getTokenSize();
-		int x = p1Control.getPanel().getWidth() + boardControl.getPanel().getRealX();
-		x += (myModel.getCurrent().getSpawnX()+1) * boardControl.getPanel().getTokenSize();
+		int y = boardControl.getPanel().getRealY()   + (myModel.getCurrent().getSpawnY()+offset) * boardControl.getPanel().getTokenSize();
+		int x = p1Control.getPanel().getWidth()      + boardControl.getPanel().getRealX();
+		x    += (myModel.getCurrent().getSpawnX()+1) * boardControl.getPanel().getTokenSize();
 		
 		animations.setTarget(x, y);
 		animations.animate();

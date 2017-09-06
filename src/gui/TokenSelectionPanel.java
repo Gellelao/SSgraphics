@@ -29,8 +29,7 @@ public class TokenSelectionPanel extends AbstractGamePanel{
 		myModel = model;
 		control = new TokenSelectionPanelController(this);
 		
-		// Add a TokenSelectionPanelController as the key and mouse listeners
-		this.addKeyListener(control);
+		// Add a TokenSelectionPanelController as the mouse listener
 		this.addMouseListener(control);
 		this.setFocusable(false);
 		
@@ -85,7 +84,7 @@ public class TokenSelectionPanel extends AbstractGamePanel{
 	}
 
 	@Override
-	protected Controller getController() {
+	public Controller getController() {
 		return control;
 	}
 

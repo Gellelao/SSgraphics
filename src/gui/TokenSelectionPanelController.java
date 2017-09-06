@@ -15,7 +15,7 @@ import src.model.Token;
  * @author Deacon
  *
  */
-public class TokenSelectionPanelController implements Controller, KeyListener, MouseListener{
+public class TokenSelectionPanelController implements Controller, MouseListener{
 	private TokenSelectionPanel panel;
 	private SuperController superC;
 
@@ -30,9 +30,19 @@ public class TokenSelectionPanelController implements Controller, KeyListener, M
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		int mouseX = e.getX();
-		int mouseY = e.getY();
-		TokenRegion r = panel.getRegion(mouseX, mouseY);
+		processClick(e.getX(), e.getY());
+	}
+
+	/**
+	 * I've separated this code out from the mouseClicked method so that it can be called
+	 * externally (e.g from a test), without having to click the mouse
+	 * 
+	 * @param x
+	 * @param y
+	 */
+	@Override
+	public void processClick(int x, int y) {
+		TokenRegion r = panel.getRegion(x, y);
 		if(r != null){
 			superC.selectRotation(r);
 		}
@@ -48,7 +58,4 @@ public class TokenSelectionPanelController implements Controller, KeyListener, M
 	public void mouseReleased(MouseEvent e) {}
 	public void mouseEntered(MouseEvent e) {}
 	public void mouseExited(MouseEvent e) {}
-	public void keyTyped(KeyEvent e) {}
-	public void keyPressed(KeyEvent e) {}
-	public void keyReleased(KeyEvent e) {}
 }
