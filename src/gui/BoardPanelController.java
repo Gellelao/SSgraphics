@@ -29,7 +29,11 @@ public class BoardPanelController implements Controller, KeyListener, MouseListe
 	 * Calls the move method of the superController, providing the appropriate direction
 	 */
 	public void keyTyped(KeyEvent e) {
-		switch (e.getKeyChar()) {
+		processKey(e.getKeyChar());
+	}
+	
+	public void processKey(char key){
+		switch (key) {
 		case 'w': superC.moveSelected("up"); return;
 		case 'a': superC.moveSelected("left"); return;
 		case 's': superC.moveSelected("down"); return;

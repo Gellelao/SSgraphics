@@ -302,6 +302,12 @@ public class SuperController {
 		}
 		updateMessage();
 	}
+	
+	public void waitABit(){
+		for(int i = 0; i < 100; i++){
+			animations.animate();
+		}
+	}
 
 	/**
 	 *  Makes the side panels both show the players tokens, rather than the four rotations panel
